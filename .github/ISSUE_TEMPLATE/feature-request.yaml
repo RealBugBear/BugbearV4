@@ -1,0 +1,40 @@
+name: Feature Request
+description: Use this template to plan new app features or sprint tasks
+title: "[Feature] "
+labels: ["feature", "sprint"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📌 Feature / Sprint Overview
+        Describe what you want to build in this issue.
+
+  - type: input
+    id: goal
+    attributes:
+      label: 🎯 Goal / Outcome
+      placeholder: E.g., Build QuestionnaireScreen UI with Firebase integration
+    validations:
+      required: true
+
+  - type: textarea
+    id: checklist
+    attributes:
+      label: ✅ Task Checklist
+      placeholder: |
+        - [ ] Create data model
+        - [ ] Fetch from Firestore
+        - [ ] Build UI layout
+        - [ ] Save answers to Firestore
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 🧠 Notes / Details
+      placeholder: Add extra notes, links, files, or designs here
+    validations:
+      required: false
