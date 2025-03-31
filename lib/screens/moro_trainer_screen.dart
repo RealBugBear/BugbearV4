@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bugbear_app/widgets/cycle_info_card.dart';
+import 'package:bugbear_app/widgets/custom_button.dart';
+import 'package:bugbear_app/widgets/timer_ring.dart' as timer_ring;
 
 class MoroTrainerScreen extends StatefulWidget {
   const MoroTrainerScreen({super.key});
@@ -25,21 +28,19 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
   Timer? _timer;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  // Plays the "letsego" sound and then starts the exercise timer.
   Future<void> _startExercisePhase() async {
-    print('Starting to play exercise sound...');
+    debugPrint('Starting to play exercise sound...');
     final Completer<void> exerciseSoundCompleted = Completer<void>();
     _audioPlayer.onPlayerComplete.listen((event) {
       if (!exerciseSoundCompleted.isCompleted) {
-        print('Exercise sound complete event received.');
+        debugPrint('Exercise sound complete event received.');
         exerciseSoundCompleted.complete();
       }
     });
-    // Provide the asset path relative to the assets folder.
     await _audioPlayer.play(AssetSource('sounds/letsego.mp3'));
-    print('Waiting for exercise sound to complete...');
+    debugPrint('Waiting for exercise sound to complete...');
     await exerciseSoundCompleted.future;
-    print('Exercise sound completed. Starting exercise timer.');
+    debugPrint('Exercise sound completed. Starting exercise timer.');
 
     setState(() {
       remainingTime = exerciseDuration;
@@ -53,26 +54,24 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
         });
       } else {
         timer.cancel();
-        // When exercise phase finishes, play pause sound first.
         _startPausePhaseWithSound();
       }
     });
   }
 
-  // Plays the pause sound, waits for it to finish, then starts the pause timer.
   Future<void> _startPausePhaseWithSound() async {
-    print('Starting to play pause sound...');
+    debugPrint('Starting to play pause sound...');
     final Completer<void> pauseSoundCompleted = Completer<void>();
     _audioPlayer.onPlayerComplete.listen((event) {
       if (!pauseSoundCompleted.isCompleted) {
-        print('Pause sound complete event received.');
+        debugPrint('Pause sound complete event received.');
         pauseSoundCompleted.complete();
       }
     });
     await _audioPlayer.play(AssetSource('sounds/daddychill.mp3'));
-    print('Waiting for pause sound to complete...');
+    debugPrint('Waiting for pause sound to complete...');
     await pauseSoundCompleted.future;
-    print('Pause sound completed. Starting pause timer.');
+    debugPrint('Pause sound completed. Starting pause timer.');
 
     setState(() {
       isExercise = false;
@@ -81,7 +80,6 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     _startPauseTimer();
   }
 
-  // Starts the pause timer countdown.
   void _startPauseTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime > 0) {
@@ -105,7 +103,31 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     });
   }
 
-  // Starts a new cycle by initiating the exercise phase.
+  Future<void> _showCycleFinishedDialog() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Zyklus $currentCycle abgeschlossen"),
+          content: currentCycle < totalCycles
+              ? const Text("Drücke START für den nächsten Zyklus.")
+              : const Text("Alle $totalCycles Zyklen abgeschlossen! 🎉"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (currentCycle >= totalCycles) {
+                  _resetAll();
+                }
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _startCycle() {
     if (isRunning || currentCycle >= totalCycles) return;
     setState(() {
@@ -127,29 +149,6 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     });
   }
 
-  void _showCycleFinishedDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text("Zyklus $currentCycle abgeschlossen"),
-        content: currentCycle < totalCycles
-            ? const Text("Drücke START für den nächsten Zyklus.")
-            : const Text("Alle 8 Zyklen abgeschlossen! 🎉"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              if (currentCycle >= totalCycles) {
-                _resetAll();
-              }
-            },
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _timer?.cancel();
@@ -159,6 +158,16 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double progress = 0;
+    if (isRunning) {
+      if (isExercise) {
+        progress = (exerciseDuration - remainingTime) / exerciseDuration;
+      } else {
+        progress = (pauseDuration - remainingTime) / pauseDuration;
+      }
+      progress = progress.clamp(0, 1).toDouble();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Moro Trainer'),
@@ -167,36 +176,33 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            Text(
-              "Zyklus: $currentCycle von $totalCycles",
-              style: const TextStyle(fontSize: 20),
-            ),
-            Text(
-              isRunning ? "Runde: $currentRound von $totalRounds" : "",
-              style: const TextStyle(fontSize: 18),
+            // TimerRing with a lower_case prefix.
+            timer_ring.TimerRing(
+              progress: progress,
+              size: 120,
+              backgroundColor: Colors.grey.shade300,
+              progressColor: isExercise ? Colors.green : Colors.red,
             ),
             const SizedBox(height: 20),
-            Text(
-              isRunning
-                  ? (isExercise ? "Übung läuft" : "Pause")
-                  : "Bereit für Start",
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "$remainingTime Sekunden",
-              style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+            CycleInfoCard(
+              currentCycle: currentCycle,
+              totalCycles: totalCycles,
+              currentRound: currentRound,
+              totalRounds: totalRounds,
+              remainingTime: remainingTime,
+              isRunning: isRunning,
+              isExercise: isExercise,
             ),
             const SizedBox(height: 30),
             if (!isRunning && currentCycle < totalCycles)
-              ElevatedButton(
+              CustomButton(
+                text: "▶️ Start Zyklus ${currentCycle + 1}",
                 onPressed: _startCycle,
-                child: Text("▶️ Start Zyklus ${currentCycle + 1}"),
               ),
-            if (!isRunning && currentCycle == totalCycles)
-              ElevatedButton(
+            if (!isRunning && currentCycle >= totalCycles)
+              CustomButton(
+                text: "🔄 Alles zurücksetzen",
                 onPressed: _resetAll,
-                child: const Text("🔄 Alles zurücksetzen"),
               ),
           ],
         ),

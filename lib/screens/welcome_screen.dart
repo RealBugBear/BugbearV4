@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:bugbear_app/widgets/custom_button.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Full-screen gradient background
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF2196F3), Color(0xFFFFFFFF)], // Blue to white
+            colors: [Color(0xFF2196F3), Color(0xFFFFFFFF)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -19,7 +19,6 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Display your logo and scale it to fit within 200 x 200 while preserving aspect ratio
               Image.asset(
                 'assets/images/bug.png',
                 width: 200,
@@ -27,28 +26,18 @@ class WelcomeScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 30),
-              // Button to navigate to the Login Screen
-              ElevatedButton(
+              CustomButton(
+                text: 'Go to Login',
                 onPressed: () {
                   Navigator.pushNamed(context, '/login');
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                child: const Text('Go to Login'),
               ),
               const SizedBox(height: 20),
-              // Button to navigate to the Training Screen
-              ElevatedButton(
+              CustomButton(
+                text: 'Training',
                 onPressed: () {
                   Navigator.pushNamed(context, '/training');
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                child: const Text('Training'),
               ),
             ],
           ),

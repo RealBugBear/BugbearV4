@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:bugbear_app/widgets/custom_button.dart';
 
 class TrainingScreen extends StatelessWidget {
-  const TrainingScreen({Key? key}) : super(key: key);
+  const TrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,26 +14,18 @@ class TrainingScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            CustomButton(
+              text: 'Moro',
               onPressed: () {
                 Navigator.pushNamed(context, '/moro');
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-              child: const Text('Moro'),
             ),
             const SizedBox(width: 20),
-            ElevatedButton(
+            CustomButton(
+              text: 'Spinalergalant',
               onPressed: () {
                 Navigator.pushNamed(context, '/spinalergalant');
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-              child: const Text('Spinalergalant'),
             ),
           ],
         ),
