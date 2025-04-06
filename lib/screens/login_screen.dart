@@ -1,47 +1,43 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:bugbear_app/widgets/custom_text_field.dart';
+import 'package:bugbear_app/widgets/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
+  const LoginScreen({Key? key}) : super(key: key);
+  
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Controller für E-Mail und Passwort
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  // Firebase Auth Instanz
+  
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  
   bool isLoading = false;
   String errorMessage = '';
-
-  // Funktion zum Anmelden
+  
   Future<void> _login() async {
     setState(() {
       isLoading = true;
       errorMessage = '';
     });
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Abrufen der UID, z.B. zur Verknüpfung mit Trainingsdaten
-      String uid = userCredential.user?.uid ?? '';
-      debugPrint('Login erfolgreich. UID: $uid');
-      // Weiterleitung oder weitere Logik hier einfügen
+      // Navigate to home (profile) after successful login.
+      Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message ?? 'Login-Fehler';
+        errorMessage = e.message ?? 'Login error';
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Unbekannter Fehler';
+        errorMessage = 'Unknown error';
       });
     } finally {
       setState(() {
@@ -49,28 +45,25 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
-
-  // Funktion zur Registrierung
+  
   Future<void> _register() async {
     setState(() {
       isLoading = true;
       errorMessage = '';
     });
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      String uid = userCredential.user?.uid ?? '';
-      debugPrint('Registrierung erfolgreich. UID: $uid');
-      // Nach erfolgreicher Registrierung ggf. direkt einloggen oder weiterleiten
+      Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message ?? 'Registrierungsfehler';
+        errorMessage = e.message ?? 'Registration error';
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Unbekannter Fehler';
+        errorMessage = 'Unknown error';
       });
     } finally {
       setState(() {
@@ -78,14 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
-
+  
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,16 +89,14 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            // E-Mail Eingabe
             CustomTextField(
-              label: 'E-Mail',
+              label: 'Email',
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            // Passwort Eingabe
             CustomTextField(
-              label: 'Passwort',
+              label: 'Password',
               controller: _passwordController,
               obscureText: true,
             ),
@@ -121,13 +112,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton(
+                      CustomButton(
+                        text: 'Login',
                         onPressed: _login,
-                        child: const Text('Login'),
                       ),
-                      ElevatedButton(
+                      CustomButton(
+                        text: 'Register',
                         onPressed: _register,
-                        child: const Text('Registrieren'),
                       ),
                     ],
                   ),
