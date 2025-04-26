@@ -7,7 +7,6 @@ class AppDrawer extends StatelessWidget {
   Future<void> _logOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     // After signing out, navigate to the login screen.
-    // Adjust '/login' to match your login route name.
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -53,6 +52,14 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Moro Trainer'),
             onTap: () {
               Navigator.pushNamed(context, '/moro');
+            },
+          ),
+          // Neuer Eintrag für Sound-Pakete
+          ListTile(
+            leading: const Icon(Icons.volume_up),
+            title: const Text('Sound-Pakete'),
+            onTap: () {
+              Navigator.pushNamed(context, '/sound-settings');
             },
           ),
           // Logoff button

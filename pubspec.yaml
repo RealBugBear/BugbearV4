@@ -52,6 +52,10 @@ flutter:
     - assets/sounds/letsego.mp3
     - assets/sounds/daddychill.mp3
     - assets/sounds/greatsuccess.mp3
+    - assets/sounds/ende.wav
+    - assets/sounds/pause.wav
+    - assets/sounds/start.wav
+    - assets/sounds/clocktick.wav
 
 dependency_overrides:
   flutter_local_notifications_linux: ^6.0.0

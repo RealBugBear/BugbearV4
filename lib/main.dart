@@ -1,3 +1,5 @@
+// File: lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,40 +8,47 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:bugbear_app/firebase_options.dart';
 import 'package:bugbear_app/screens/login_screen.dart';
 import 'package:bugbear_app/screens/profile_screen.dart';
-import 'package:bugbear_app/screens/spinalergalant_screen.dart';
-import 'package:bugbear_app/screens/moro_trainer_screen.dart';
+// Prefix-Importe zur Vermeidung von Namenskonflikten:
+import 'package:bugbear_app/screens/spinalergalant_screen.dart' as spinal;  // Alias hinzugefügt
+import 'package:bugbear_app/screens/moro_trainer_screen.dart' as moro;  // Alias hinzugefügt
 import 'package:bugbear_app/screens/passwort_reset_screen.dart';
-import 'package:bugbear_app/notification_service.dart'; // Import der Benachrichtigungsdienste
+import 'package:bugbear_app/screens/sound_settings_screen.dart';
 
-// Initialisiere das Plugin für lokale Benachrichtigungen
+import 'package:bugbear_app/notification_service.dart';
+import 'package:bugbear_app/services/sound_manager.dart';
+import 'package:bugbear_app/services/sound_packs.dart';
+
+// Globales Plugin für lokale Benachrichtigungen
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase initialisieren
+  // 1. SoundManager: Init mit Classicpack (Assets preloading)
+  await SoundManager().init(pack: classicpack);
+
+  // 2. Firebase initialisieren
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Android-spezifische Einstellungen für Benachrichtigungen
+  // 3. Android-spezifische Notification-Einstellungen
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  // Gesamtinitialisierung für alle Plattformen
+  // 4. Globale Notification-Einstellungen
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
 
-  // Plugin initialisieren mit Callback, falls eine Benachrichtigung ausgewählt wird
+  // 5. Notification-Plugin initialisieren
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: (NotificationResponse response) async {
       final payload = response.payload;
       if (payload != null) {
-        print("Notification payload: $payload");
-        // Hier können Sie Navigationslogik oder andere Aktionen einbauen
+        debugPrint('Notification payload: $payload');
       }
     },
   );
@@ -48,17 +57,14 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bugbear App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      // Überwacht den Authentifizierungsstatus des Benutzers
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
@@ -67,32 +73,29 @@ class MyApp extends StatelessWidget {
               body: Center(child: CircularProgressIndicator()),
             );
           }
-          // Falls ein Benutzer angemeldet ist, zeigen wir den ProfileScreen mit einem Test-Button
           if (snapshot.hasData) {
             return Scaffold(
-              appBar: AppBar(
-                title: const Text('Profile Screen'),
-              ),
+              appBar: AppBar(title: const Text('Profile Screen')),
               body: ProfileScreen(),
               floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  // Löst die Erinnerungsbenachrichtigung aus, die in notification_service.dart definiert ist
+                onPressed: () async {
+                  await SoundManager().playOnce(SoundType.start);
                   showTrainingNotification();
                 },
                 child: const Icon(Icons.notifications),
               ),
             );
           }
-          // Falls kein Benutzer angemeldet ist, zeigen wir den LoginScreen
           return const LoginScreen();
         },
       ),
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/profile': (context) => ProfileScreen(),
-        '/spinalergalant': (context) => const SpinalergalantScreen(),
-        '/moro': (context) => const MoroTrainerScreen(),
-        '/reset-password': (context) => const PasswordResetScreen(),
+        '/login':          (context) => const LoginScreen(),
+        '/profile':        (context) => ProfileScreen(),
+        '/spinalergalant': (context) => spinal.SpinalergalantScreen(),
+        '/moro':           (context) => moro.MoroTrainerScreen(),
+        '/reset-password': (context) => PasswordResetScreen(),
+        '/sound-settings': (context) => SoundSettingsScreen(),
       },
     );
   }

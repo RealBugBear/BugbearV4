@@ -4,18 +4,17 @@ import 'package:bugbear_app/models/notification_timing.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
-// Initialize timezone data. You can also call this in your main() function.
+/// Initialisiert das Zeitzonen-Modul.
+/// Sie können das auch in main() aufrufen.
 void initializeTimezone() {
   tz_data.initializeTimeZones();
 }
 
-// Global plugin for local notifications.
+/// Globales Plugin-Objekt für lokale Benachrichtigungen.
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 /// Schedules notifications for the given training program.
-/// Depending on how much time has elapsed since the last training,
-/// it schedules either an initial, repeating, or advanced notification.
 void scheduleNotificationsForProgram(TrainingProgram program) {
   final now = DateTime.now();
   final timeSinceLastTraining = now.difference(program.lastTraining);
@@ -31,11 +30,11 @@ void scheduleNotificationsForProgram(TrainingProgram program) {
 /// Schedules the initial notification to be delivered 18 hours after the last training.
 void scheduleInitialNotification(TrainingProgram program) {
   final scheduledTime = program.lastTraining.add(initialDelay);
-  // Convert DateTime to TZDateTime in the local timezone.
-  final tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
+  final tz.TZDateTime tzScheduledTime =
+      tz.TZDateTime.from(scheduledTime, tz.local);
 
   flutterLocalNotificationsPlugin.zonedSchedule(
-    0, // Unique ID for this notification.
+    0, // Unique ID
     'Erinnerung: Zeit für Training!',
     'Hey, es sind jetzt 18h seit Ihrem letzten Training vergangen.',
     tzScheduledTime,
@@ -48,23 +47,19 @@ void scheduleInitialNotification(TrainingProgram program) {
         priority: Priority.high,
       ),
     ),
-    // Parameters as defined in version 13.0.0:
-    androidAllowWhileIdle: true,
-    uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
+    // Neuer, in Version 19 required Parameter:
+    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     payload: null,
   );
 }
 
 /// Schedules repeating notifications at the specified interval.
-/// Note: Here, RepeatInterval.everyMinute is used as a placeholder.
-/// For a custom interval (e.g., every 4 hours), custom scheduling logic may be necessary.
 void scheduleRepeatingNotification(TrainingProgram program, Duration interval) {
   flutterLocalNotificationsPlugin.periodicallyShow(
-    2, // Unique ID for repeating notifications.
+    2, // Unique ID
     'Erinnerung: Training nicht verpasst!',
     'Denken Sie daran, Ihr Training zu absolvieren.',
-    RepeatInterval.everyMinute, // Placeholder; adjust as needed.
+    RepeatInterval.everyMinute, // Platzhalter; hier auch an androidScheduleMode denken
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'training_repeating_channel',
@@ -74,6 +69,8 @@ void scheduleRepeatingNotification(TrainingProgram program, Duration interval) {
         priority: Priority.high,
       ),
     ),
+    // Ebenfalls erforderlich:
+    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     payload: null,
   );
 }
@@ -81,7 +78,7 @@ void scheduleRepeatingNotification(TrainingProgram program, Duration interval) {
 /// Shows an advanced notification if 72 hours have passed since the last training.
 void showAdvancedNotification(TrainingProgram program) {
   flutterLocalNotificationsPlugin.show(
-    1, // Unique ID for the advanced notification.
+    1, // Unique ID
     'Erinnerung: Sehr lange Pause!',
     'Es sind 72h seit Ihrem letzten Training vergangen. Zeit, loszulegen!',
     const NotificationDetails(
