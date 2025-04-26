@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">729792119936</string>
+    <string name="google_api_key" translatable="false">AIzaSyAkoYYb1bH949evjRb940gr_OUH7LFnns0</string>
+    <string name="google_app_id" translatable="false">1:729792119936:android:4a0693745974f2e0935265</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAkoYYb1bH949evjRb940gr_OUH7LFnns0</string>
+    <string name="google_storage_bucket" translatable="false">bugbear-9d720.firebasestorage.app</string>
+    <string name="project_id" translatable="false">bugbear-9d720</string>
+</resources>

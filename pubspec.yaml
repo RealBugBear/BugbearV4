@@ -1,5 +1,7 @@
 name: bugbear_app
-description: "A new Flutter project."
+
+description: "A visionary Flutter project, built with passion and innovative flair."
+
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,13 +12,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   cupertino_icons: ^1.0.8
   firebase_core: ^3.12.1
   firebase_auth: ^5.5.1
   cloud_firestore: ^5.6.5
   http: ^1.3.0
   audioplayers: ^6.4.0
-  intl: ^0.18.0
+  intl: ^0.18.1
+
+  # Bumped to satisfy flutter_local_notifications ≥19.0.0:
+  timezone: ^0.10.0
+  flutter_local_notifications: ^19.1.0
 
 dev_dependencies:
   flutter_test:
@@ -25,12 +32,26 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
   assets:
     - assets/images/bug.png
     - assets/images/spin1.png
     - assets/images/spin2.png
     - assets/images/spin3.png
     - assets/images/spin4.png
+    # Moro exercise images
+    - assets/images/moro1.png
+    - assets/images/moro2.png
+    - assets/images/moro3u4.png
+    - assets/images/moro5.png
+    - assets/images/moro6.png
+    - assets/images/moro7.png
+    - assets/images/moro8.png
+
+    # Sounds
     - assets/sounds/letsego.mp3
     - assets/sounds/daddychill.mp3
     - assets/sounds/greatsuccess.mp3
+
+dependency_overrides:
+  flutter_local_notifications_linux: ^6.0.0

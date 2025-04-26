@@ -29,7 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navigate to home (profile) after successful login.
       Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -122,6 +121,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+            const SizedBox(height: 16),
+            // Hier der "Passwort vergessen?"-Button:
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/reset-password');
+              },
+              child: const Text('Passwort vergessen?'),
+            ),
           ],
         ),
       ),

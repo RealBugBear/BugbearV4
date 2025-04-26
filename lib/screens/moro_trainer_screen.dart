@@ -162,6 +162,41 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     super.dispose();
   }
 
+  // Helper to get image asset for current cycle
+  String _getImageAsset() {
+    switch (currentCycle) {
+      case 1:
+        return 'assets/images/moro1.png';
+      case 2:
+        return 'assets/images/moro2.png';
+      case 3:
+      case 4:
+        return 'assets/images/moro3u4.png';
+      case 5:
+        return 'assets/images/moro5.png';
+      case 6:
+        return 'assets/images/moro6.png';
+      case 7:
+        return 'assets/images/moro7.png';
+      case 8:
+        return 'assets/images/moro8.png';
+      default:
+        return '';
+    }
+  }
+
+  // Helper to get prompt text based on state
+  String _getPromptText() {
+    if (!isRunning) {
+      return '';
+    }
+    if (isExercise) {
+      return 'Get into position for exercise $currentCycle.';
+    } else {
+      return 'Exercise $currentCycle done.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double progress = 0;
@@ -179,6 +214,24 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
+            // Display exercise image and prompt when cycle has started
+            if (currentCycle > 0) ...[
+              Image.asset(
+                _getImageAsset(),
+                fit: BoxFit.contain,
+                width: double.infinity,
+                height: 200,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                _getPromptText(),
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            // Timer ring widget
             timer_ring.TimerRing(
               progress: progress,
               size: 120,
@@ -186,6 +239,8 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
               progressColor: isExercise ? Colors.green : Colors.red,
             ),
             const SizedBox(height: 20),
+
+            // Cycle and round info card
             CycleInfoCard(
               currentCycle: currentCycle,
               totalCycles: totalCycles,
@@ -196,6 +251,8 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
               isExercise: isExercise,
             ),
             const SizedBox(height: 30),
+
+            // Control buttons
             if (!isRunning && currentCycle < totalCycles)
               CustomButton(
                 text: "▶️ Start Zyklus ${currentCycle + 1}",

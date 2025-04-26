@@ -3,11 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
-  
+
+  Future<void> _logOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    // After signing out, navigate to the login screen.
+    // Adjust '/login' to match your login route name.
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     final User? user = FirebaseAuth.instance.currentUser;
-    
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -48,7 +55,14 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushNamed(context, '/moro');
             },
           ),
-          // Additional navigation items can be added here.
+          // Logoff button
+          ListTile(
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Log Out'),
+            onTap: () async {
+              await _logOut(context);
+            },
+          ),
         ],
       ),
     );
