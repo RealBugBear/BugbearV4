@@ -1,9 +1,7 @@
 name: bugbear_app
-
 description: "A visionary Flutter project, built with passion and innovative flair."
 
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -24,7 +22,6 @@ dependencies:
   timezone: ^0.10.0
   flutter_local_notifications: ^19.1.0
   provider: ^6.0.5
-  
 
 dev_dependencies:
   flutter_test:
@@ -37,28 +34,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/bug.png
-    - assets/images/spin1.png
-    - assets/images/spin2.png
-    - assets/images/spin3.png
-    - assets/images/spin4.png
-    # Moro exercise images
-    - assets/images/moro1.png
-    - assets/images/moro2.png
-    - assets/images/moro3u4.png
-    - assets/images/moro5.png
-    - assets/images/moro6.png
-    - assets/images/moro7.png
-    - assets/images/moro8.png
-
-    # Sounds
-    - assets/sounds/letsego.mp3
-    - assets/sounds/daddychill.mp3
-    - assets/sounds/greatsuccess.mp3
-    - assets/sounds/ende.wav
-    - assets/sounds/pause.wav
-    - assets/sounds/start.wav
-    - assets/sounds/clocktick.wav
+    - assets/images/
+    - assets/sounds/
 
 flutter_intl:
   enabled: true
