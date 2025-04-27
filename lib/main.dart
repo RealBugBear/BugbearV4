@@ -30,7 +30,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. SoundManager init with classic pack (preload assets)
+  // 1. SoundManager init with classic pack (preload-assets)
   await SoundManager().init(pack: classicpack);
 
   // 2. Initialize Firebase
