@@ -14,11 +14,10 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Set up Flutter
+      - name: Set up Flutter (latest stable)
         uses: subosito/flutter-action@v2
         with:
-          channel: stable            # track the stable channel
-          flutter-version: '3.29.0'  # includes Dart ≥3.7.2
+          channel: stable   # installs the latest stable Flutter (Dart ≥3.7.2)
 
       - name: Install dependencies
         run: flutter pub get
