@@ -34,9 +34,7 @@ Future<void> main() async {
   await SoundManager().init(pack: classicpack);
 
   // 2. Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // 3. Android-specific notification settings
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -61,7 +59,7 @@ Future<void> main() async {
   runApp(
     ChangeNotifierProvider(
       create: (_) => LocaleProvider(),
-      child: const MyApp(),  // nothing changes here
+      child: const MyApp(), // nothing changes here
     ),
   );
 }
@@ -90,7 +88,8 @@ class MyApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: StreamBuilder<User?>(  // no change here
+      home: StreamBuilder<User?>(
+        // no change here
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -100,9 +99,7 @@ class MyApp extends StatelessWidget {
           }
           if (snapshot.hasData) {
             return Scaffold(
-              appBar: AppBar(
-                title: Text(S.of(context).overallProgressTitle),
-              ),
+              appBar: AppBar(title: Text(S.of(context).overallProgressTitle)),
               drawer: const AppDrawer(),
               body: ProfileScreen(),
               floatingActionButton: FloatingActionButton(

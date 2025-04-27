@@ -21,8 +21,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       _message = null;
     });
     try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: _emailController.text.trim());
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: _emailController.text.trim(),
+      );
       if (!mounted) return;
       setState(() {
         _message = S.of(context).resetEmailSent;
@@ -52,9 +53,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).resetPasswordTitle),
-      ),
+      appBar: AppBar(title: Text(S.of(context).resetPasswordTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -68,17 +67,15 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: S.of(context).emailLabel,
-              ),
+              decoration: InputDecoration(labelText: S.of(context).emailLabel),
             ),
             const SizedBox(height: 20),
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
-                    onPressed: _resetPassword,
-                    child: Text(S.of(context).resetButton),
-                  ),
+                  onPressed: _resetPassword,
+                  child: Text(S.of(context).resetButton),
+                ),
             if (_message != null) ...[
               const SizedBox(height: 20),
               Text(

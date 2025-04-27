@@ -29,7 +29,7 @@ class SoundManager {
 
   /// Player für One-Shot-Sounds.
   final AudioPlayer _oneShotPlayer = AudioPlayer();
-  
+
   /// Map für Loop-Sounds, die gestoppt werden können.
   final Map<SoundType, AudioPlayer> _loopPlayers = {};
 

@@ -30,8 +30,10 @@ void scheduleNotificationsForProgram(TrainingProgram program) {
 /// Schedules the initial notification to be delivered 18 hours after the last training.
 void scheduleInitialNotification(TrainingProgram program) {
   final scheduledTime = program.lastTraining.add(initialDelay);
-  final tz.TZDateTime tzScheduledTime =
-      tz.TZDateTime.from(scheduledTime, tz.local);
+  final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(
+    scheduledTime,
+    tz.local,
+  );
 
   flutterLocalNotificationsPlugin.zonedSchedule(
     0, // Unique ID
@@ -59,7 +61,8 @@ void scheduleRepeatingNotification(TrainingProgram program, Duration interval) {
     2, // Unique ID
     'Erinnerung: Training nicht verpasst!',
     'Denken Sie daran, Ihr Training zu absolvieren.',
-    RepeatInterval.everyMinute, // Platzhalter; hier auch an androidScheduleMode denken
+    RepeatInterval
+        .everyMinute, // Platzhalter; hier auch an androidScheduleMode denken
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'training_repeating_channel',

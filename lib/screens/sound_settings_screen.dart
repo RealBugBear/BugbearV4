@@ -11,9 +11,7 @@ class SoundSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).soundSettingsTitle),
-      ),
+      appBar: AppBar(title: Text(S.of(context).soundSettingsTitle)),
       body: ListView(
         children: [
           ListTile(

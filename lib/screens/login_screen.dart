@@ -6,7 +6,7 @@ import 'package:bugbear_app/generated/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
-  
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -14,12 +14,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+
   bool isLoading = false;
   String errorMessage = '';
-  
+
   Future<void> _login() async {
     setState(() {
       isLoading = true;
@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
-  
+
   Future<void> _register() async {
     setState(() {
       isLoading = true;
@@ -71,20 +71,18 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
-  
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).loginTitle),
-      ),
+      appBar: AppBar(title: Text(S.of(context).loginTitle)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -102,26 +100,23 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 16),
             if (errorMessage.isNotEmpty)
-              Text(
-                errorMessage,
-                style: const TextStyle(color: Colors.red),
-              ),
+              Text(errorMessage, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 16),
             isLoading
                 ? const CircularProgressIndicator()
                 : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CustomButton(
-                        text: S.of(context).loginButton,
-                        onPressed: _login,
-                      ),
-                      CustomButton(
-                        text: S.of(context).registerButton,
-                        onPressed: _register,
-                      ),
-                    ],
-                  ),
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CustomButton(
+                      text: S.of(context).loginButton,
+                      onPressed: _login,
+                    ),
+                    CustomButton(
+                      text: S.of(context).registerButton,
+                      onPressed: _register,
+                    ),
+                  ],
+                ),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () {

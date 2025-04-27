@@ -124,23 +124,24 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
     if (!mounted) return;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(S.of(context).cycleComplete(currentCycle)),
-        content: Text(
-          currentCycle < totalCycles
-              ? S.of(context).pressStartNextCycle
-              : S.of(context).allCyclesCompleted,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              if (currentCycle >= totalCycles) _resetAll();
-            },
-            child: Text(S.of(context).ok),
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(S.of(context).cycleComplete(currentCycle)),
+            content: Text(
+              currentCycle < totalCycles
+                  ? S.of(context).pressStartNextCycle
+                  : S.of(context).allCyclesCompleted,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  if (currentCycle >= totalCycles) _resetAll();
+                },
+                child: Text(S.of(context).ok),
+              ),
+            ],
           ),
-        ],
-      ),
     );
     setState(() => isRunning = false);
   }

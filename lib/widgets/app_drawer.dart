@@ -27,9 +27,7 @@ class AppDrawer extends StatelessWidget {
             accountName: Text(
               user?.displayName ?? S.of(context).defaultUsername,
             ),
-            accountEmail: Text(
-              user?.email ?? S.of(context).defaultEmail,
-            ),
+            accountEmail: Text(user?.email ?? S.of(context).defaultEmail),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Text(
@@ -75,24 +73,26 @@ class AppDrawer extends StatelessWidget {
             onTap: () async {
               final selected = await showDialog<Locale>(
                 context: context,
-                builder: (ctx) => AlertDialog(
-                  title: Text(S.of(context).selectLanguage),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: S.delegate.supportedLocales.map((loc) {
-                      return RadioListTile<Locale>(
-                        value: loc,
-                        groupValue: localeProvider.locale,
-                        title: Text(
-                          loc.languageCode == 'de'
-                              ? S.of(context).german
-                              : S.of(context).english,
-                        ),
-                        onChanged: (l) => Navigator.of(ctx).pop(l),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                builder:
+                    (ctx) => AlertDialog(
+                      title: Text(S.of(context).selectLanguage),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children:
+                            S.delegate.supportedLocales.map((loc) {
+                              return RadioListTile<Locale>(
+                                value: loc,
+                                groupValue: localeProvider.locale,
+                                title: Text(
+                                  loc.languageCode == 'de'
+                                      ? S.of(context).german
+                                      : S.of(context).english,
+                                ),
+                                onChanged: (l) => Navigator.of(ctx).pop(l),
+                              );
+                            }).toList(),
+                      ),
+                    ),
               );
               if (selected != null) {
                 localeProvider.setLocale(selected);

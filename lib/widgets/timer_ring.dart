@@ -48,18 +48,20 @@ class _TimerRingPainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
 
     // Draw the background circle.
-    final bgPaint = Paint()
-      ..color = backgroundColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
+    final bgPaint =
+        Paint()
+          ..color = backgroundColor
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke;
     canvas.drawCircle(center, radius, bgPaint);
 
     // Draw the progress arc.
-    final progressPaint = Paint()
-      ..color = progressColor
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final progressPaint =
+        Paint()
+          ..color = progressColor
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     // Calculate the sweep angle based on the progress value.
     final sweepAngle = 2 * pi * progress;

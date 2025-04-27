@@ -1,10 +1,10 @@
 // training_data.dart
 class TrainingProgram {
-  final String id;             // Eindeutige Programm-ID
-  final String name;           // Name des Programms
-  DateTime lastTraining;       // Letzter Trainingszeitpunkt
+  final String id; // Eindeutige Programm-ID
+  final String name; // Name des Programms
+  DateTime lastTraining; // Letzter Trainingszeitpunkt
   // Optional: Weitere Parameter, z.B. Schwierigkeitsgrad oder geplante Wiederholung
-  final String? difficulty;    // Kann null sein, wenn nicht angegeben
+  final String? difficulty; // Kann null sein, wenn nicht angegeben
 
   TrainingProgram({
     required this.id,
