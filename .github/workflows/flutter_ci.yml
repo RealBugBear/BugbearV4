@@ -1,0 +1,47 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+
+      - name: Cache Pub Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.FLUTTER_ROOT }}/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Verify Formatting
+        run: flutter format --set-exit-if-changed .
+
+      - name: Analyze Project
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Run Tests with Coverage
+        run: |
+          flutter test --coverage
+          lcov --remove coverage/lcov.info 'lib/generated/*' -o coverage/lcov.info
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
