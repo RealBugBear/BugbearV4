@@ -1,3 +1,5 @@
+// File: lib/screens/spinalergalant_screen.dart
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:bugbear_app/widgets/custom_button.dart';
@@ -7,6 +9,7 @@ import 'package:bugbear_app/services/training_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/services/sound_manager.dart';
+import 'package:bugbear_app/generated/l10n.dart';
 
 class SpinalergalantScreen extends StatefulWidget {
   const SpinalergalantScreen({super.key});
@@ -24,10 +27,8 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
   int currentCycle = 0;
   int currentRound = 0;
   int remainingTime = 0;
-
   bool isRunning = false;
   bool isExercise = true;
-
   Timer? _timer;
   final TrainingService _trainingService = TrainingService();
 
@@ -37,9 +38,10 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
     super.dispose();
   }
 
+  int get _displayCycleIndex => currentCycle == 0 ? 1 : currentCycle;
+
   String _getImageAsset() {
-    final idx = currentCycle == 0 ? 1 : currentCycle;
-    switch (idx) {
+    switch (_displayCycleIndex) {
       case 1:
         return 'assets/images/spin1.png';
       case 2:
@@ -53,14 +55,14 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
     }
   }
 
-  String _getPromptText() {
-    final idx = currentCycle == 0 ? 1 : currentCycle;
+  String _getPromptText(BuildContext context) {
+    final idx = _displayCycleIndex;
     if (!isRunning) {
-      return 'Get into position for exercise $idx.';
+      return S.of(context).getIntoPosition(idx);
     }
     return isExercise
-        ? 'Exercise $idx in progress.'
-        : 'Exercise $idx done.';
+        ? S.of(context).exerciseInProgress(idx)
+        : S.of(context).exerciseDone(idx);
   }
 
   void _startCycle() {
@@ -93,9 +95,7 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
   }
 
   Future<void> _startPausePhase() async {
-    setState(() {
-      remainingTime = pauseDuration;
-    });
+    setState(() => remainingTime = pauseDuration);
     await SoundManager().playOnce(SoundType.pause);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime > 0) {
@@ -125,17 +125,19 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Zyklus $currentCycle abgeschlossen'),
-        content: currentCycle < totalCycles
-            ? const Text('Drücke START für den nächsten Zyklus.')
-            : const Text('Alle Zyklen abgeschlossen! 🎉'),
+        title: Text(S.of(context).cycleComplete(currentCycle)),
+        content: Text(
+          currentCycle < totalCycles
+              ? S.of(context).pressStartNextCycle
+              : S.of(context).allCyclesCompleted,
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               if (currentCycle >= totalCycles) _resetAll();
             },
-            child: const Text('OK'),
+            child: Text(S.of(context).ok),
           ),
         ],
       ),
@@ -163,7 +165,7 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Spinalergalant Trainer')),
+      appBar: AppBar(title: Text(S.of(context).spinalergalantTrainerTitle)),
       drawer: const AppDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -178,7 +180,7 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                _getPromptText(),
+                _getPromptText(context),
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
@@ -187,8 +189,7 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
                 progress: progress.clamp(0, 1),
                 size: 120,
                 backgroundColor: Colors.grey.shade300,
-                progressColor:
-                    isExercise ? Colors.green : Colors.orangeAccent,
+                progressColor: isExercise ? Colors.green : Colors.orangeAccent,
               ),
               const SizedBox(height: 20),
               CycleInfoCard(
@@ -203,12 +204,12 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
               const SizedBox(height: 30),
               if (!isRunning && currentCycle < totalCycles)
                 CustomButton(
-                  text: "▶️ Start Zyklus ${currentCycle + 1}",
+                  text: S.of(context).startCycle(currentCycle + 1),
                   onPressed: _startCycle,
                 ),
               if (!isRunning && currentCycle >= totalCycles)
                 CustomButton(
-                  text: "🔄 Alles zurücksetzen",
+                  text: S.of(context).resetAll,
                   onPressed: _resetAll,
                 ),
             ],

@@ -1,3 +1,4 @@
+# Already existing entries
 gradle-wrapper.jar
 /.gradle
 /captures/
@@ -12,3 +13,32 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# ── Flutter / Dart ───────────────────────────────────────────────────────────────
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Build outputs
+build/
+android/app/build/
+android/app/*.apk
+
+# Gradle
+android/.gradle/
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+
+# Xcode
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+Pods/
+DerivedData/

@@ -1,8 +1,10 @@
+// File: lib/screens/password_reset_screen.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:bugbear_app/generated/l10n.dart';
 
 class PasswordResetScreen extends StatefulWidget {
-  const PasswordResetScreen({Key? key}) : super(key: key);
+  const PasswordResetScreen({super.key});
 
   @override
   _PasswordResetScreenState createState() => _PasswordResetScreenState();
@@ -21,18 +23,20 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
+      if (!mounted) return;
       setState(() {
-        _message = 'Die Passwort-Zurücksetzungs-E-Mail wurde gesendet.';
+        _message = S.of(context).resetEmailSent;
       });
     } on FirebaseAuthException catch (e) {
       setState(() {
-        _message = 'Fehler: ${e.message}';
+        _message = S.of(context).passwordResetError(e.message ?? '');
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
-        _message = 'Ein unerwarteter Fehler ist aufgetreten.';
+        _message = S.of(context).unexpectedError;
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -44,33 +48,36 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
     _emailController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Passwort zurücksetzen'),
+        title: Text(S.of(context).resetPasswordTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'Gib deine E-Mail-Adresse ein, um eine Passwort-Zurücksetzungs-E-Mail zu erhalten:',
+            Text(
+              S.of(context).resetPasswordInstruction,
+              textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'E-Mail',
+              decoration: InputDecoration(
+                labelText: S.of(context).emailLabel,
               ),
             ),
             const SizedBox(height: 20),
             _isLoading
-                ? const CircularProgressIndicator()
+                ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
                     onPressed: _resetPassword,
-                    child: const Text('Zurücksetzen'),
+                    child: Text(S.of(context).resetButton),
                   ),
             if (_message != null) ...[
               const SizedBox(height: 20),

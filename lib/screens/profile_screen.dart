@@ -4,13 +4,13 @@ import 'package:bugbear_app/models/training_session.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:bugbear_app/widgets/app_drawer.dart';
+import 'package:bugbear_app/generated/l10n.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({Key? key}) : super(key: key);
+  ProfileScreen({super.key});
   final TrainingService _trainingService = TrainingService();
   final User? currentUser = FirebaseAuth.instance.currentUser;
   
-  // Builds a calendar view for a single month.
   Widget buildMonthCalendar(BuildContext context, int year, int month, Set<String> trainingDays) {
     DateTime firstDay = DateTime(year, month, 1);
     int daysInMonth = DateTime(year, month + 1, 0).day;
@@ -19,13 +19,18 @@ class ProfileScreen extends StatelessWidget {
     int rows = (totalCells / 7).ceil();
     
     List<TableRow> tableRows = [];
-    
-    List<String> dayNames = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    List<String> dayNames = [
+      S.of(context).dayMo,
+      S.of(context).dayDi,
+      S.of(context).dayMi,
+      S.of(context).dayDo,
+      S.of(context).dayFr,
+      S.of(context).daySa,
+      S.of(context).daySo
+    ];
     tableRows.add(
       TableRow(
-        children: dayNames
-            .map((name) => Center(child: Text(name, style: const TextStyle(fontSize: 10))))
-            .toList(),
+        children: dayNames.map((name) => Center(child: Text(name, style: const TextStyle(fontSize: 10)))).toList(),
       ),
     );
     
@@ -63,8 +68,11 @@ class ProfileScreen extends StatelessWidget {
     
     return Column(
       children: [
-        Text(DateFormat('MMMM').format(firstDay),
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+        Text(
+          DateFormat.MMMM(Localizations.localeOf(context).languageCode)
+              .format(firstDay),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)
+        ),
         const SizedBox(height: 4),
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -78,14 +86,14 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     if (currentUser == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text("Profile")),
+        appBar: AppBar(title: Text(S.of(context).profileTitle)),
         drawer: const AppDrawer(),
-        body: const Center(child: Text("User not logged in.")),
+        body: Center(child: Text(S.of(context).userNotLoggedIn)),
       );
     }
     
     return Scaffold(
-      appBar: AppBar(title: const Text("Overall Progress Calendar")),
+      appBar: AppBar(title: Text(S.of(context).overallProgressTitle)),
       drawer: const AppDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
@@ -93,7 +101,7 @@ class ProfileScreen extends StatelessWidget {
           stream: _trainingService.getAllTrainingSessions(userId: currentUser!.uid),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
+              return Center(child: Text(S.of(context).errorLoading(snapshot.error.toString())));
             }
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());

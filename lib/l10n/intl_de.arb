@@ -1,0 +1,89 @@
+{
+    "@@locale": "de",
+    "appTitle": "Bugbear App",
+    "quizTitle": "Reflex-Quiz",
+    "loginTitle": "Login",
+    "emailLabel": "Email",
+    "passwordLabel": "Passwort",
+    "loginButton": "Anmelden",
+    "registerButton": "Registrieren",
+    "forgotPassword": "Passwort vergessen?",
+    "resultHeader": "Ihr Reflex-Profil",
+    "screenshotHint": "Machen Sie einen Screenshot, um Ihre Ergebnisse zu speichern.",
+    "loginErrorDefault": "Anmeldefehler",
+    "registrationErrorDefault": "Registrierungsfehler",
+    "unknownError": "Unbekannter Fehler",
+  
+    "moroTrainerTitle": "Moro Trainer",
+    "getIntoPosition": "Nimm Position für Übung {idx} ein.",
+    "@getIntoPosition": {
+      "description": "Aufforderung vor Übung Nummer",
+      "placeholders": { "idx": {} }
+    },
+    "exerciseInProgress": "Übung {idx} läuft.",
+    "@exerciseInProgress": {
+      "description": "Hinweis während der Übung",
+      "placeholders": { "idx": {} }
+    },
+    "exerciseDone": "Übung {idx} abgeschlossen.",
+    "@exerciseDone": {
+      "description": "Hinweis nach Abschluss der Übung",
+      "placeholders": { "idx": {} }
+    },
+    "cycleComplete": "Zyklus {cycle} abgeschlossen",
+    "@cycleComplete": {
+      "description": "Dialogtitel nach Abschluss eines Zyklus",
+      "placeholders": { "cycle": {} }
+    },
+    "pressStartNextCycle": "Drücke START für den nächsten Zyklus.",
+    "allCyclesCompleted": "Alle Zyklen abgeschlossen!",
+    "ok": "OK",
+    "startCycle": "▶️ Starte Zyklus {idx}",
+    "@startCycle": {
+      "description": "Buttontext zum Starten eines Zyklus",
+      "placeholders": { "idx": {} }
+    },
+    "resetAll": "Alles zurücksetzen",
+  
+    "resetPasswordTitle": "Passwort zurücksetzen",
+    "resetPasswordInstruction": "Gib deine E-Mail-Adresse ein, um eine Passwort-Zurücksetzungs-E-Mail zu erhalten:",
+    "resetButton": "Zurücksetzen",
+    "resetEmailSent": "Die Passwort-Zurücksetzungs-E-Mail wurde gesendet.",
+    "passwordResetError": "Fehler: {message}",
+    "@passwordResetError": {
+      "description": "Fehlermeldung, wenn das Zurücksetzen des Passworts fehlschlägt",
+      "placeholders": { "message": {} }
+    },
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+  
+    "profileTitle": "Profil",
+    "userNotLoggedIn": "Benutzer nicht angemeldet.",
+    "overallProgressTitle": "Gesamtfortschritt-Kalender",
+    "errorLoading": "Fehler: {error}",
+    "@errorLoading": {
+      "description": "Fehlermeldung beim Laden der Trainingsdaten",
+      "placeholders": { "error": {} }
+    },
+    "dayMo": "Mo",
+    "dayDi": "Di",
+    "dayMi": "Mi",
+    "dayDo": "Do",
+    "dayFr": "Fr",
+    "daySa": "Sa",
+    "daySo": "So",
+  
+    "defaultUsername": "Benutzer",
+    "defaultEmail": "Keine E-Mail",
+    "home": "Start",
+    "spinalergalantTrainerTitle": "Spinalergalant Trainer",
+    "soundSettingsTitle": "Sound-Pakete",
+    "logOut": "Abmelden",
+    "languageSettings": "Sprache",
+    "selectLanguage": "Sprache wählen",
+    "english": "Englisch",
+    "german": "Deutsch",
+  
+    "memepack": "Memepack",
+    "classicpack": "Classicpack"
+  }
+  

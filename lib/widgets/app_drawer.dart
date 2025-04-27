@@ -1,74 +1,112 @@
+// File: lib/widgets/app_drawer.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:bugbear_app/generated/l10n.dart';
+import 'package:bugbear_app/providers/locale_provider.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({Key? key}) : super(key: key);
+  const AppDrawer({super.key});
 
   Future<void> _logOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    // After signing out, navigate to the login screen.
     Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
   Widget build(BuildContext context) {
-    final User? user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
+    final localeProvider = Provider.of<LocaleProvider>(context);
 
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text(user?.displayName ?? 'User'),
-            accountEmail: Text(user?.email ?? 'No email'),
+            accountName: Text(
+              user?.displayName ?? S.of(context).defaultUsername,
+            ),
+            accountEmail: Text(
+              user?.email ?? S.of(context).defaultEmail,
+            ),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Text(
-                user != null && user.displayName != null && user.displayName!.isNotEmpty
+                user != null && (user.displayName?.isNotEmpty ?? false)
                     ? user.displayName![0].toUpperCase()
-                    : (user != null && user.email != null && user.email!.isNotEmpty
+                    : (user != null && (user.email?.isNotEmpty ?? false)
                         ? user.email![0].toUpperCase()
                         : 'U'),
                 style: const TextStyle(fontSize: 24.0, color: Colors.blue),
               ),
             ),
           ),
+
           ListTile(
             leading: const Icon(Icons.home),
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pushNamed(context, '/profile');
-            },
+            title: Text(S.of(context).home),
+            onTap: () => Navigator.pushNamed(context, '/profile'),
           ),
+
           ListTile(
             leading: const Icon(Icons.fitness_center),
-            title: const Text('Spinalergalant Trainer'),
-            onTap: () {
-              Navigator.pushNamed(context, '/spinalergalant');
-            },
+            title: Text(S.of(context).spinalergalantTrainerTitle),
+            onTap: () => Navigator.pushNamed(context, '/spinalergalant'),
           ),
+
           ListTile(
             leading: const Icon(Icons.accessibility_new),
-            title: const Text('Moro Trainer'),
-            onTap: () {
-              Navigator.pushNamed(context, '/moro');
-            },
+            title: Text(S.of(context).moroTrainerTitle),
+            onTap: () => Navigator.pushNamed(context, '/moro'),
           ),
-          // Neuer Eintrag für Sound-Pakete
+
           ListTile(
             leading: const Icon(Icons.volume_up),
-            title: const Text('Sound-Pakete'),
-            onTap: () {
-              Navigator.pushNamed(context, '/sound-settings');
+            title: Text(S.of(context).soundSettingsTitle),
+            onTap: () => Navigator.pushNamed(context, '/sound-settings'),
+          ),
+
+          const Divider(),
+
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: Text(S.of(context).languageSettings),
+            onTap: () async {
+              final selected = await showDialog<Locale>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text(S.of(context).selectLanguage),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: S.delegate.supportedLocales.map((loc) {
+                      return RadioListTile<Locale>(
+                        value: loc,
+                        groupValue: localeProvider.locale,
+                        title: Text(
+                          loc.languageCode == 'de'
+                              ? S.of(context).german
+                              : S.of(context).english,
+                        ),
+                        onChanged: (l) => Navigator.of(ctx).pop(l),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              );
+              if (selected != null) {
+                localeProvider.setLocale(selected);
+                Navigator.of(context).pop();
+              }
             },
           ),
-          // Logoff button
+
+          const Divider(),
+
           ListTile(
             leading: const Icon(Icons.exit_to_app),
-            title: const Text('Log Out'),
-            onTap: () async {
-              await _logOut(context);
-            },
+            title: Text(S.of(context).logOut),
+            onTap: () async => await _logOut(context),
           ),
         ],
       ),

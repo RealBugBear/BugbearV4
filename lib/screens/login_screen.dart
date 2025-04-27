@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bugbear_app/widgets/custom_text_field.dart';
 import 'package:bugbear_app/widgets/custom_button.dart';
+import 'package:bugbear_app/generated/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -32,11 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message ?? 'Login error';
+        errorMessage = e.message ?? S.of(context).loginErrorDefault;
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Unknown error';
+        errorMessage = S.of(context).unknownError;
       });
     } finally {
       setState(() {
@@ -58,11 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message ?? 'Registration error';
+        errorMessage = e.message ?? S.of(context).registrationErrorDefault;
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Unknown error';
+        errorMessage = S.of(context).unknownError;
       });
     } finally {
       setState(() {
@@ -82,20 +83,20 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text(S.of(context).loginTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             CustomTextField(
-              label: 'Email',
+              label: S.of(context).emailLabel,
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
             CustomTextField(
-              label: 'Password',
+              label: S.of(context).passwordLabel,
               controller: _passwordController,
               obscureText: true,
             ),
@@ -112,22 +113,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CustomButton(
-                        text: 'Login',
+                        text: S.of(context).loginButton,
                         onPressed: _login,
                       ),
                       CustomButton(
-                        text: 'Register',
+                        text: S.of(context).registerButton,
                         onPressed: _register,
                       ),
                     ],
                   ),
             const SizedBox(height: 16),
-            // Hier der "Passwort vergessen?"-Button:
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/reset-password');
               },
-              child: const Text('Passwort vergessen?'),
+              child: Text(S.of(context).forgotPassword),
             ),
           ],
         ),

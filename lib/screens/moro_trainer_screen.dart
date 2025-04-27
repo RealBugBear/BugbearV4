@@ -1,12 +1,14 @@
-import 'package:flutter/material.dart';
+// File: lib/screens/moro_trainer_screen.dart
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/widgets/cycle_info_card.dart';
 import 'package:bugbear_app/widgets/custom_button.dart';
 import 'package:bugbear_app/widgets/timer_ring.dart' as timer_ring;
 import 'package:bugbear_app/services/training_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/services/sound_manager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bugbear_app/generated/l10n.dart';
 
 class MoroTrainerScreen extends StatefulWidget {
   const MoroTrainerScreen({super.key});
@@ -24,11 +26,10 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
   int currentCycle = 0;
   int currentRound = 0;
   int remainingTime = 0;
-
   bool isRunning = false;
   bool isExercise = true;
-
   Timer? _timer;
+
   final TrainingService _trainingService = TrainingService();
 
   @override
@@ -37,9 +38,6 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     super.dispose();
   }
 
-  /// Index für Anzeige von Bild und Text:
-  /// - Wenn gerade kein Zyklus läuft, Preview für nächsten Zyklus
-  /// - Ansonsten aktueller Zyklus
   int get _displayCycleIndex {
     if (!isRunning && currentCycle > 0 && currentCycle < totalCycles) {
       return currentCycle + 1;
@@ -47,7 +45,6 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     return currentCycle == 0 ? 1 : currentCycle;
   }
 
-  /// Liefert den Asset-Pfad für das Bild des angezeigten Zyklus
   String _getImageAsset() {
     switch (_displayCycleIndex) {
       case 1:
@@ -70,18 +67,16 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     }
   }
 
-  /// Prompt-Text basierend auf Phase und Anzeige-Zyklus
-  String _getPromptText() {
+  String _getPromptText(BuildContext context) {
     final idx = _displayCycleIndex;
     if (!isRunning) {
-      return 'Get into position for exercise $idx.';
+      return S.of(context).getIntoPosition(idx);
     }
     return isExercise
-        ? 'Exercise $idx in progress.'
-        : 'Exercise $idx done.';
+        ? S.of(context).exerciseInProgress(idx)
+        : S.of(context).exerciseDone(idx);
   }
 
-  /// Startet einen neuen Zyklus (Trainingsserie)
   void _startCycle() {
     if (isRunning || currentCycle >= totalCycles) return;
     setState(() {
@@ -92,21 +87,13 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     _startExercisePhase();
   }
 
-  /// Beginnt die Übungsphase jeder Runde mit Start-Sound
   Future<void> _startExercisePhase() async {
-    // 1) Start-Sound abspielen für jede Runde
     await SoundManager().playOnce(SoundType.start);
-
-    // 2) UI-Update: Übung aktiv, Timer zurücksetzen
     setState(() {
       isExercise = true;
       remainingTime = exerciseDuration;
     });
-
-    // 3) Tick-Sound starten
     SoundManager().startLoop(SoundType.tick);
-
-    // 4) Countdown starten
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime > 0) {
         setState(() => remainingTime--);
@@ -119,11 +106,8 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     });
   }
 
-  /// Beginnt die Pausenphase, spielt Pause-Sound nur einmal
   Future<void> _startPausePhase() async {
-    setState(() {
-      remainingTime = pauseDuration;
-    });
+    setState(() => remainingTime = pauseDuration);
     await SoundManager().playOnce(SoundType.pause);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime > 0) {
@@ -140,10 +124,8 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     });
   }
 
-  /// Nach Abschluss aller Runden: Ende-Sound, Logging, Dialog und Bild-Preview aktualisieren
   Future<void> _completeCycle() async {
     await SoundManager().playOnce(SoundType.end);
-
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await _trainingService.logTrainingSession(
@@ -151,15 +133,14 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
         trainingType: 'moro',
       );
     }
-
     if (!mounted) return;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Zyklus $currentCycle abgeschlossen'),
-        content: currentCycle < totalCycles
-            ? const Text('Drücke START für den nächsten Zyklus.')
-            : const Text('Alle Zyklen abgeschlossen! 🎉'),
+        title: Text(S.of(context).cycleComplete(currentCycle)),
+        content: Text(currentCycle < totalCycles
+            ? S.of(context).pressStartNextCycle
+            : S.of(context).allCyclesCompleted),
         actions: [
           TextButton(
             onPressed: () {
@@ -168,18 +149,14 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
                 _resetAll();
               }
             },
-            child: const Text('OK'),
+            child: Text(S.of(context).ok),
           ),
         ],
       ),
     );
-
-    // Nach Dialog-Show bleibt isRunning false, und _displayCycleIndex
-    // zeigt automatisch die Vorschau für den nächsten Zyklus.
     setState(() => isRunning = false);
   }
 
-  /// Rücksetzen aller Zähler
   void _resetAll() {
     _timer?.cancel();
     setState(() {
@@ -200,7 +177,7 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Moro Trainer')),
+      appBar: AppBar(title: Text(S.of(context).moroTrainerTitle)),
       drawer: const AppDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -215,7 +192,7 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                _getPromptText(),
+                _getPromptText(context),
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
@@ -239,12 +216,12 @@ class _MoroTrainerScreenState extends State<MoroTrainerScreen> {
               const SizedBox(height: 30),
               if (!isRunning && currentCycle < totalCycles)
                 CustomButton(
-                  text: '▶️ Start Zyklus ${currentCycle + 1}',
+                  text: S.of(context).startCycle(currentCycle + 1),
                   onPressed: _startCycle,
                 ),
               if (!isRunning && currentCycle >= totalCycles)
                 CustomButton(
-                  text: '🔄 Alles zurücksetzen',
+                  text: S.of(context).resetAll,
                   onPressed: _resetAll,
                 ),
             ],

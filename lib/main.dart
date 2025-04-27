@@ -3,46 +3,51 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:bugbear_app/generated/l10n.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/firebase_options.dart';
 import 'package:bugbear_app/screens/login_screen.dart';
 import 'package:bugbear_app/screens/profile_screen.dart';
-// Prefix-Importe zur Vermeidung von Namenskonflikten:
-import 'package:bugbear_app/screens/spinalergalant_screen.dart' as spinal;  // Alias hinzugefügt
-import 'package:bugbear_app/screens/moro_trainer_screen.dart' as moro;  // Alias hinzugefügt
+// Prefix imports to avoid name conflicts:
+import 'package:bugbear_app/screens/spinalergalant_screen.dart' as spinal;
+import 'package:bugbear_app/screens/moro_trainer_screen.dart' as moro;
 import 'package:bugbear_app/screens/passwort_reset_screen.dart';
 import 'package:bugbear_app/screens/sound_settings_screen.dart';
 
 import 'package:bugbear_app/notification_service.dart';
 import 'package:bugbear_app/services/sound_manager.dart';
 import 'package:bugbear_app/services/sound_packs.dart';
+import 'package:bugbear_app/providers/locale_provider.dart';
 
-// Globales Plugin für lokale Benachrichtigungen
+// Global plugin for local notifications
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. SoundManager: Init mit Classicpack (Assets preloading)
+  // 1. SoundManager init with classic pack (preload assets)
   await SoundManager().init(pack: classicpack);
 
-  // 2. Firebase initialisieren
+  // 2. Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 3. Android-spezifische Notification-Einstellungen
+  // 3. Android-specific notification settings
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  // 4. Globale Notification-Einstellungen
+  // 4. Global notification settings
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
 
-  // 5. Notification-Plugin initialisieren
+  // 5. Initialize notification plugin
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: (NotificationResponse response) async {
@@ -53,7 +58,12 @@ Future<void> main() async {
     },
   );
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LocaleProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -61,8 +71,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Provider.of<LocaleProvider>(context).locale;
     return MaterialApp(
-      title: 'Bugbear App',
+      // Dynamic title after localization loaded
+      onGenerateTitle: (ctx) => S.of(ctx).appTitle,
+      locale: locale,
+      supportedLocales: S.delegate.supportedLocales,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       home: StreamBuilder<User?>(
@@ -75,7 +95,10 @@ class MyApp extends StatelessWidget {
           }
           if (snapshot.hasData) {
             return Scaffold(
-              appBar: AppBar(title: const Text('Profile Screen')),
+              appBar: AppBar(
+                title: Text(S.of(context).overallProgressTitle),
+              ),
+              drawer: const AppDrawer(),
               body: ProfileScreen(),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
@@ -90,12 +113,12 @@ class MyApp extends StatelessWidget {
         },
       ),
       routes: {
-        '/login':          (context) => const LoginScreen(),
-        '/profile':        (context) => ProfileScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/profile': (context) => ProfileScreen(),
         '/spinalergalant': (context) => spinal.SpinalergalantScreen(),
-        '/moro':           (context) => moro.MoroTrainerScreen(),
-        '/reset-password': (context) => PasswordResetScreen(),
-        '/sound-settings': (context) => SoundSettingsScreen(),
+        '/moro': (context) => moro.MoroTrainerScreen(),
+        '/reset-password': (context) => const PasswordResetScreen(),
+        '/sound-settings': (context) => const SoundSettingsScreen(),
       },
     );
   }
