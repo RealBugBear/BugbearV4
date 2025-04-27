@@ -61,17 +61,22 @@ Future<void> main() async {
   runApp(
     ChangeNotifierProvider(
       create: (_) => LocaleProvider(),
-      child: const MyApp(),
+      child: const MyApp(),  // nothing changes here
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // ✨ NEW: allow injecting a LocaleProvider for tests
+  final LocaleProvider? testLocaleProvider;
+  const MyApp({super.key, this.testLocaleProvider});
 
   @override
   Widget build(BuildContext context) {
-    final locale = Provider.of<LocaleProvider>(context).locale;
+    // use the injected provider if present, otherwise read from context
+    final provider = testLocaleProvider ?? Provider.of<LocaleProvider>(context);
+    final locale = provider.locale;
+
     return MaterialApp(
       // Dynamic title after localization loaded
       onGenerateTitle: (ctx) => S.of(ctx).appTitle,
@@ -85,7 +90,7 @@ class MyApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: StreamBuilder<User?>(
+      home: StreamBuilder<User?>(  // no change here
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
