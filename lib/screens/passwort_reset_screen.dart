@@ -1,4 +1,3 @@
-// File: lib/screens/password_reset_screen.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bugbear_app/generated/l10n.dart';
@@ -7,7 +6,7 @@ class PasswordResetScreen extends StatefulWidget {
   const PasswordResetScreen({super.key});
 
   @override
-  _PasswordResetScreenState createState() => _PasswordResetScreenState();
+  State<PasswordResetScreen> createState() => _PasswordResetScreenState();
 }
 
 class _PasswordResetScreenState extends State<PasswordResetScreen> {
@@ -26,18 +25,21 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       );
       if (!mounted) return;
       setState(() {
-        _message = S.of(context).resetEmailSent;
+        _message = S.of(context).resetEmailSent; // <- this key must exist
       });
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       setState(() {
-        _message = S.of(context).passwordResetError(e.message ?? '');
+        _message =
+            e.message ?? S.of(context).unexpectedError; // ✅ Fix type issue
       });
     } catch (_) {
+      if (!mounted) return;
       setState(() {
         _message = S.of(context).unexpectedError;
       });
-    } finally {
-      if (!mounted) return;
+    }
+    if (mounted) {
       setState(() {
         _isLoading = false;
       });
@@ -74,7 +76,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
                   onPressed: _resetPassword,
-                  child: Text(S.of(context).resetButton),
+                  child: Text(
+                    S.of(context).resetButton,
+                  ), // ✅ Correct existing button label
                 ),
             if (_message != null) ...[
               const SizedBox(height: 20),

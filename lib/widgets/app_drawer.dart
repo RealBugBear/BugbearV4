@@ -9,9 +9,49 @@ import 'package:bugbear_app/providers/locale_provider.dart';
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
-  Future<void> _logOut(BuildContext context) async {
+  void _navigate(BuildContext context, String routeName) {
+    Navigator.of(context).pushNamed(routeName);
+  }
+
+  void _logOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(context, '/login');
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  void _showLanguagePicker(
+    BuildContext context,
+    LocaleProvider localeProvider,
+  ) {
+    showDialog<Locale>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(S.of(context).selectLanguage),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children:
+                  S.delegate.supportedLocales.map((loc) {
+                    return RadioListTile<Locale>(
+                      value: loc,
+                      groupValue: localeProvider.locale,
+                      title: Text(
+                        loc.languageCode == 'de'
+                            ? S.of(context).german
+                            : S.of(context).english,
+                      ),
+                      onChanged: (l) {
+                        Navigator.of(ctx).pop(l);
+                        if (l != null) {
+                          localeProvider.setLocale(l);
+                        }
+                      },
+                    );
+                  }).toList(),
+            ),
+          ),
+    );
   }
 
   @override
@@ -44,25 +84,25 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home),
             title: Text(S.of(context).home),
-            onTap: () => Navigator.pushNamed(context, '/profile'),
+            onTap: () => _navigate(context, '/profile'),
           ),
 
           ListTile(
             leading: const Icon(Icons.fitness_center),
             title: Text(S.of(context).spinalergalantTrainerTitle),
-            onTap: () => Navigator.pushNamed(context, '/spinalergalant'),
+            onTap: () => _navigate(context, '/spinalergalant'),
           ),
 
           ListTile(
             leading: const Icon(Icons.accessibility_new),
             title: Text(S.of(context).moroTrainerTitle),
-            onTap: () => Navigator.pushNamed(context, '/moro'),
+            onTap: () => _navigate(context, '/moro'),
           ),
 
           ListTile(
             leading: const Icon(Icons.volume_up),
             title: Text(S.of(context).soundSettingsTitle),
-            onTap: () => Navigator.pushNamed(context, '/sound-settings'),
+            onTap: () => _navigate(context, '/sound-settings'),
           ),
 
           const Divider(),
@@ -70,35 +110,7 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.language),
             title: Text(S.of(context).languageSettings),
-            onTap: () async {
-              final selected = await showDialog<Locale>(
-                context: context,
-                builder:
-                    (ctx) => AlertDialog(
-                      title: Text(S.of(context).selectLanguage),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children:
-                            S.delegate.supportedLocales.map((loc) {
-                              return RadioListTile<Locale>(
-                                value: loc,
-                                groupValue: localeProvider.locale,
-                                title: Text(
-                                  loc.languageCode == 'de'
-                                      ? S.of(context).german
-                                      : S.of(context).english,
-                                ),
-                                onChanged: (l) => Navigator.of(ctx).pop(l),
-                              );
-                            }).toList(),
-                      ),
-                    ),
-              );
-              if (selected != null) {
-                localeProvider.setLocale(selected);
-                Navigator.of(context).pop();
-              }
-            },
+            onTap: () => _showLanguagePicker(context, localeProvider),
           ),
 
           const Divider(),
@@ -106,7 +118,7 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: Text(S.of(context).logOut),
-            onTap: () async => await _logOut(context),
+            onTap: () => _logOut(context),
           ),
         ],
       ),

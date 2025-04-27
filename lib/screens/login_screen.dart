@@ -5,7 +5,7 @@ import 'package:bugbear_app/widgets/custom_button.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -30,19 +30,24 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      if (!mounted) return; // ✅ Safe use of context
       Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = e.message ?? S.of(context).loginErrorDefault;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = S.of(context).unknownError;
       });
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -56,19 +61,24 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = e.message ?? S.of(context).registrationErrorDefault;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         errorMessage = S.of(context).unknownError;
       });
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -102,21 +112,22 @@ class _LoginScreenState extends State<LoginScreen> {
             if (errorMessage.isNotEmpty)
               Text(errorMessage, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 16),
-            isLoading
-                ? const CircularProgressIndicator()
-                : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CustomButton(
-                      text: S.of(context).loginButton,
-                      onPressed: _login,
-                    ),
-                    CustomButton(
-                      text: S.of(context).registerButton,
-                      onPressed: _register,
-                    ),
-                  ],
-                ),
+            if (isLoading)
+              const CircularProgressIndicator()
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomButton(
+                    text: S.of(context).loginButton,
+                    onPressed: _login,
+                  ),
+                  CustomButton(
+                    text: S.of(context).registerButton,
+                    onPressed: _register,
+                  ),
+                ],
+              ),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () {
