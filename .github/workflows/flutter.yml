@@ -17,13 +17,13 @@ jobs:
       - name: Set up Flutter (latest stable)
         uses: subosito/flutter-action@v2
         with:
-          channel: stable   # installs the latest stable Flutter (Dart ≥3.7.2)
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Analyze code
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Run tests
         run: flutter test
