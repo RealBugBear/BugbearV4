@@ -1,45 +1,43 @@
+// File: lib/models/notification_manager.dart
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:bugbear_app/models/training_data.dart';
 import 'package:bugbear_app/models/notification_timing.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
-/// Initialisiert das Zeitzonen-Modul.
-/// Sie können das auch in main() aufrufen.
+/// Must be called once (e.g. at app startup) before scheduling anything.
 void initializeTimezone() {
   tz_data.initializeTimeZones();
 }
 
-/// Globales Plugin-Objekt für lokale Benachrichtigungen.
+/// Global plugin instance.
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-/// Schedules notifications for the given training program.
+/// Entry point: decides which notifications to fire or schedule.
 void scheduleNotificationsForProgram(TrainingProgram program) {
   final now = DateTime.now();
-  final timeSinceLastTraining = now.difference(program.lastTraining);
+  final since = now.difference(program.lastTraining);
 
-  if (timeSinceLastTraining >= advancedDelay) {
-    showAdvancedNotification(program);
-  } else if (timeSinceLastTraining >= initialDelay) {
-    scheduleInitialNotification(program);
-    scheduleRepeatingNotification(program, repeatInterval);
+  if (since >= advancedDelay) {
+    _showAdvancedNotification();
+  } else if (since >= initialDelay) {
+    _scheduleInitialNotification(program);
+    _scheduleRepeatingNotification();
   }
 }
 
-/// Schedules the initial notification to be delivered 18 hours after the last training.
-void scheduleInitialNotification(TrainingProgram program) {
-  final scheduledTime = program.lastTraining.add(initialDelay);
-  final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(
-    scheduledTime,
-    tz.local,
-  );
+/// One-off 18 h reminder.
+void _scheduleInitialNotification(TrainingProgram program) {
+  final scheduled = program.lastTraining.add(initialDelay);
+  final tz.TZDateTime when = tz.TZDateTime.from(scheduled, tz.local);
 
   flutterLocalNotificationsPlugin.zonedSchedule(
-    0, // Unique ID
+    0,
     'Erinnerung: Zeit für Training!',
-    'Hey, es sind jetzt 18h seit Ihrem letzten Training vergangen.',
-    tzScheduledTime,
+    'Hey, es sind jetzt 18 h seit Ihrem letzten Training vergangen.',
+    when,
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'training_channel',
@@ -49,20 +47,19 @@ void scheduleInitialNotification(TrainingProgram program) {
         priority: Priority.high,
       ),
     ),
-    // Neuer, in Version 19 required Parameter:
+    // 🔑 Required for exact delivery even while idle
     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     payload: null,
   );
 }
 
-/// Schedules repeating notifications at the specified interval.
-void scheduleRepeatingNotification(TrainingProgram program, Duration interval) {
+/// Periodic “don’t forget” reminder.
+void _scheduleRepeatingNotification() {
   flutterLocalNotificationsPlugin.periodicallyShow(
-    2, // Unique ID
+    1,
     'Erinnerung: Training nicht verpasst!',
     'Denken Sie daran, Ihr Training zu absolvieren.',
-    RepeatInterval
-        .everyMinute, // Platzhalter; hier auch an androidScheduleMode denken
+    RepeatInterval.daily,
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'training_repeating_channel',
@@ -72,24 +69,24 @@ void scheduleRepeatingNotification(TrainingProgram program, Duration interval) {
         priority: Priority.high,
       ),
     ),
-    // Ebenfalls erforderlich:
+    // 🔑 Required for exact delivery even while idle
     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     payload: null,
   );
 }
 
-/// Shows an advanced notification if 72 hours have passed since the last training.
-void showAdvancedNotification(TrainingProgram program) {
+/// Immediate “72 h passed” alert.
+void _showAdvancedNotification() {
   flutterLocalNotificationsPlugin.show(
-    1, // Unique ID
+    2,
     'Erinnerung: Sehr lange Pause!',
-    'Es sind 72h seit Ihrem letzten Training vergangen. Zeit, loszulegen!',
+    'Es sind 72 h seit Ihrem letzten Training vergangen. Zeit, loszulegen!',
     const NotificationDetails(
       android: AndroidNotificationDetails(
         'advanced_training_channel',
         'Erweiterte Training Erinnerungen',
         channelDescription:
-            'Sende Benachrichtigung, wenn 72h seit dem letzten Training vergangen sind.',
+            'Sende Benachrichtigung, wenn 72 h seit dem letzten Training vergangen sind.',
         importance: Importance.high,
         priority: Priority.high,
       ),
