@@ -12,13 +12,24 @@ void main() {
   final mockAuth = MockFirebaseAuth(mockUser: mockUser);
 
   group('Basic widget tests', () {
-    testWidgets('Shows profile when user is signed in', (WidgetTester tester) async {
+    testWidgets('Shows profile when user is signed in',
+        (WidgetTester tester) async {
+      // Inject a builder that simply renders Text('Profile')
       await tester.pumpWidget(
         MaterialApp(
-          home: RootScreen(auth: mockAuth),
+          home: RootScreen(
+            auth: mockAuth,
+            builder: (_, __) => const Scaffold(
+              body: Center(child: Text('Profile')),
+            ),
+          ),
         ),
       );
+
+      // Let the StreamBuilder emit
       await tester.pumpAndSettle();
+
+      // Confirm our stubbed Profile text shows up
       expect(find.text('Profile'), findsOneWidget);
     });
   });

@@ -76,12 +76,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// A fully–configured RootScreen, but with an injectable [auth] & [builder].
+/// Defaults preserve original behavior; tests can override [builder] to stub out.
 class RootScreen extends StatelessWidget {
   final FirebaseAuth auth;
+  final Widget Function(BuildContext context, User? user) builder;
 
-  // no longer const; FirebaseAuth.instance is not a compile-time constant
-  RootScreen({Key? key, FirebaseAuth? auth})
-      : auth = auth ?? FirebaseAuth.instance,
+  RootScreen({
+    Key? key,
+    FirebaseAuth? auth,
+    Widget Function(BuildContext, User?)? builder,
+  })  : auth = auth ?? FirebaseAuth.instance,
+        builder = builder ??
+            ((ctx, user) =>
+                user != null ? ProfileScreen() : LoginScreen()),
         super(key: key);
 
   @override
@@ -94,7 +102,7 @@ class RootScreen extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        return snap.hasData ? ProfileScreen() : LoginScreen();
+        return builder(ctx, snap.data);
       },
     );
   }
