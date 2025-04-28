@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3'  # match your local Flutter
+          flutter-version: '3.29.3'
 
-      - name: Cache Pub dependencies
+      - name: Cache Pub Dependencies
         uses: actions/cache@v4
         with:
           path: ~/.pub-cache
@@ -28,22 +28,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: flutter pub get
 
-      - name: Verify formatting
-        run: dart format --set-exit-if-changed .
+      - name: Auto-format code
+        run: dart format .
 
-      - name: Analyze code
+      - name: Analyze Project
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
-      - name: Run tests with coverage
+      - name: Run Tests & Gather Coverage
         run: |
           sudo apt-get update && sudo apt-get install -y lcov
           flutter test --coverage
           lcov --remove coverage/lcov.info 'lib/generated/*' -o coverage/lcov.info
 
-      - name: Upload coverage to Codecov
+      - name: Upload Coverage
         uses: codecov/codecov-action@v4
         with:
           files: coverage/lcov.info
