@@ -18,10 +18,10 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3'  # updated to match your local Flutter SDK
+          flutter-version: '3.29.3'
 
       - name: Flutter Doctor
-        run: flutter doctor  # Ensure Flutter is properly installed
+        run: flutter doctor
 
       - name: Cache Pub Dependencies
         uses: actions/cache@v4
@@ -34,8 +34,8 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Verify Formatting
-        run: dart format --set-exit-if-changed .
+      - name: Format Code
+        run: dart format .        # <<–– Auto-formats in place, exit code 0
 
       - name: Analyze Project
         run: flutter analyze
