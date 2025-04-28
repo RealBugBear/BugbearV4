@@ -1,3 +1,4 @@
+# .github/workflows/flutter_ci.yml
 name: Flutter CI
 
 on:
@@ -17,7 +18,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.2'  # Specify your Flutter version explicitly
+          flutter-version: '3.29.3'  # updated to match your local Flutter SDK
 
       - name: Flutter Doctor
         run: flutter doctor  # Ensure Flutter is properly installed
@@ -25,7 +26,7 @@ jobs:
       - name: Cache Pub Dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.pub-cache  # Correct path for caching pub dependencies
+          path: ~/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pub-
