@@ -1,4 +1,4 @@
-# .github/workflows/flutter_ci.yml
+# File: .github/workflows/flutter_ci.yml
 name: Flutter CI
 
 on:
@@ -12,18 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3'
+          flutter-version: '3.29.3'  # match your local Flutter
 
-      - name: Flutter Doctor
-        run: flutter doctor
-
-      - name: Cache Pub Dependencies
+      - name: Cache Pub dependencies
         uses: actions/cache@v4
         with:
           path: ~/.pub-cache
@@ -31,26 +28,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Format Code
+      - name: Verify formatting
         run: dart format --set-exit-if-changed .
 
-      - name: Analyze Project
-        run: flutter analyze --no-fatal-warnings --no-fatal-infos
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
-      - name: Install LCOV
+      - name: Run tests with coverage
         run: |
-          sudo apt-get update
-          sudo apt-get install -y lcov
-
-      - name: Run Tests with Coverage
-        run: |
+          sudo apt-get update && sudo apt-get install -y lcov
           flutter test --coverage
           lcov --remove coverage/lcov.info 'lib/generated/*' -o coverage/lcov.info
 
-      - name: Upload Coverage
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: coverage/lcov.info
