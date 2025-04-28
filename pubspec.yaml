@@ -1,3 +1,5 @@
+# File: pubspec.yaml
+
 name: bugbear_app
 description: "A visionary Flutter project, built with passion and innovative flair."
 
@@ -5,7 +7,9 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.7.2 <4.0.0"
+  # Flutter 3.7.2 ships with Dart 2.19.2, so we must allow
+  # any Dart >=2.19.0 <3.0.0.
+  sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -22,7 +26,7 @@ dependencies:
   timezone: ^0.10.0
   flutter_local_notifications: ^19.1.0
   provider: ^6.0.5
-  json_annotation: ^4.9.0  # bereits ergänzt für JSON-Annotationen
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -31,7 +35,7 @@ dev_dependencies:
   mockito: ^5.4.2
   firebase_auth_mocks: ^0.14.1
   build_runner: ^2.4.6
-  json_serializable: ^6.6.0   # neu ergänzt für From/To JSON-Generator
+  json_serializable: ^6.6.0
   intl_utils: ^2.8.0
 
 flutter:
@@ -39,8 +43,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/fragen_de.json    # JSON-Dateien für Deutsch
-    - assets/fragen_en.json    # JSON-Dateien für Englisch
+    - assets/fragen_de.json
+    - assets/fragen_en.json
     - assets/images/
     - assets/sounds/
 
