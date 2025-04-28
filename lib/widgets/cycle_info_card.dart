@@ -25,23 +25,23 @@ class CycleInfoCard extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Zyklus: $currentCycle von $totalCycles",
+          'Zyklus: $currentCycle von $totalCycles',
           style: const TextStyle(fontSize: 20),
         ),
         Text(
-          isRunning ? "Runde: $currentRound von $totalRounds" : "",
+          isRunning ? 'Runde: $currentRound von $totalRounds' : '',
           style: const TextStyle(fontSize: 18),
         ),
         const SizedBox(height: 20),
         Text(
           isRunning
-              ? (isExercise ? "Übung läuft" : "Pause")
-              : "Bereit für Start",
+              ? (isExercise ? 'Übung läuft' : 'Pause')
+              : 'Bereit für Start',
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
         Text(
-          "$remainingTime Sekunden",
+          '$remainingTime Sekunden',
           style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
         ),
       ],

@@ -7,9 +7,21 @@ import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({super.key});
-  final TrainingService _trainingService = TrainingService();
-  final User? currentUser = FirebaseAuth.instance.currentUser;
+  // Injected dependencies
+  final TrainingService trainingService;
+  final FirebaseAuth auth;
+
+  /// Accepts optional named parameters for easier testing
+  ProfileScreen({
+    Key? key,
+    TrainingService? trainingService,
+    FirebaseAuth? auth,
+  })  : trainingService = trainingService ?? TrainingService(),
+        auth = auth ?? FirebaseAuth.instance,
+        super(key: key);
+
+  /// Derive currentUser from injected auth
+  User? get currentUser => auth.currentUser;
 
   Widget buildMonthCalendar(
     BuildContext context,
@@ -17,14 +29,14 @@ class ProfileScreen extends StatelessWidget {
     int month,
     Set<String> trainingDays,
   ) {
-    DateTime firstDay = DateTime(year, month, 1);
-    int daysInMonth = DateTime(year, month + 1, 0).day;
-    int startWeekday = firstDay.weekday;
-    int totalCells = startWeekday - 1 + daysInMonth;
-    int rows = (totalCells / 7).ceil();
+    final DateTime firstDay = DateTime(year, month, 1);
+    final int daysInMonth = DateTime(year, month + 1, 0).day;
+    final int startWeekday = firstDay.weekday;
+    final int totalCells = startWeekday - 1 + daysInMonth;
+    final int rows = (totalCells / 7).ceil();
 
-    List<TableRow> tableRows = [];
-    List<String> dayNames = [
+    final List<TableRow> tableRows = [];
+    final List<String> dayNames = [
       S.of(context).dayMo,
       S.of(context).dayDi,
       S.of(context).dayMi,
@@ -33,31 +45,31 @@ class ProfileScreen extends StatelessWidget {
       S.of(context).daySa,
       S.of(context).daySo,
     ];
+
     tableRows.add(
       TableRow(
-        children:
-            dayNames
-                .map(
-                  (name) => Center(
-                    child: Text(name, style: const TextStyle(fontSize: 10)),
-                  ),
-                )
-                .toList(),
+        children: dayNames
+            .map(
+              (name) => Center(
+                child: Text(name, style: const TextStyle(fontSize: 10)),
+              ),
+            )
+            .toList(),
       ),
     );
 
     int cellIndex = 0;
     for (int row = 0; row < rows; row++) {
-      List<Widget> cells = [];
+      final List<Widget> cells = [];
       for (int col = 0; col < 7; col++) {
         cellIndex++;
-        int dayNum = cellIndex - (startWeekday - 1);
+        final int dayNum = cellIndex - (startWeekday - 1);
         if (dayNum < 1 || dayNum > daysInMonth) {
-          cells.add(const SizedBox(height: 20, width: 20)); // ✅ Fixed here
+          cells.add(const SizedBox(height: 20, width: 20));
         } else {
-          DateTime currentDay = DateTime(year, month, dayNum);
-          String dateString = DateFormat('yyyy-MM-dd').format(currentDay);
-          bool completed = trainingDays.contains(dateString);
+          final DateTime currentDay = DateTime(year, month, dayNum);
+          final String dateString = DateFormat('yyyy-MM-dd').format(currentDay);
+          final bool completed = trainingDays.contains(dateString);
           cells.add(
             Container(
               height: 20,
@@ -116,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder<List<TrainingSession>>(
-          stream: _trainingService.getAllTrainingSessions(
+          stream: trainingService.getAllTrainingSessions(
             userId: currentUser!.uid,
           ),
           builder: (context, snapshot) {
@@ -131,15 +143,13 @@ class ProfileScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
-            final Set<String> trainingDays =
-                snapshot.data!
-                    .map(
-                      (session) =>
-                          DateFormat('yyyy-MM-dd').format(session.sessionDate),
-                    )
-                    .toSet();
-            int currentYear = DateTime.now().year;
-            List<Widget> monthWidgets = [];
+            final Set<String> trainingDays = snapshot.data!
+                .map((session) => DateFormat('yyyy-MM-dd').format(session.sessionDate))
+                .toSet();
+
+            final int currentYear = DateTime.now().year;
+            final List<Widget> monthWidgets = [];
+
             for (int month = 1; month <= 12; month++) {
               monthWidgets.add(
                 Container(
@@ -171,3 +181,4 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
+

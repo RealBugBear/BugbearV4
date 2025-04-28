@@ -17,7 +17,7 @@ class CustomButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
         textStyle: const TextStyle(fontSize: 16),
       ),
-      child: Text(text),
+      child: Text(text), // ❌ Here is the missing `const`
     );
   }
 }

@@ -17,12 +17,15 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version: '3.7.2'  # Specify your Flutter version explicitly
+
+      - name: Flutter Doctor
+        run: flutter doctor  # Ensure Flutter is properly installed
 
       - name: Cache Pub Dependencies
         uses: actions/cache@v4
         with:
-          path: ${{ env.FLUTTER_ROOT }}/.pub-cache
+          path: ~/.pub-cache  # Correct path for caching pub dependencies
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pub-

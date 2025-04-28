@@ -5,20 +5,35 @@ import 'package:bugbear_app/widgets/custom_button.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  // Injected FirebaseAuth for easier testing
+  final FirebaseAuth auth;
+
+  // Removed 'const' since auth cannot be a compile-time constant
+  LoginScreen({
+    Key? key,
+    FirebaseAuth? auth,
+  })  : auth = auth ?? FirebaseAuth.instance,
+        super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  late final FirebaseAuth _auth;
 
   bool isLoading = false;
   String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _auth = widget.auth;
+  }
 
   Future<void> _login() async {
     setState(() {
@@ -30,14 +45,14 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      if (!mounted) return; // ✅ Safe use of context
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/profile');
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       setState(() {
         errorMessage = e.message ?? S.of(context).loginErrorDefault;
       });
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
         errorMessage = S.of(context).unknownError;
@@ -68,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         errorMessage = e.message ?? S.of(context).registrationErrorDefault;
       });
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
         errorMessage = S.of(context).unknownError;
@@ -141,3 +156,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

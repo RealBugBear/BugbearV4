@@ -10,12 +10,11 @@ class TrainingService {
     required String trainingType,
   }) async {
     // Normalize to just the date (year, month, day)
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
+    final DateTime now = DateTime.now();
+    final DateTime today = DateTime(now.year, now.month, now.day);
 
     // Query if a session for this training and day already exists.
-    // Note: Use the generic type <Map<String, dynamic>> for QuerySnapshot.
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
         await _firestore
             .collection('trainingSessions')
             .where('userId', isEqualTo: userId)
@@ -29,10 +28,10 @@ class TrainingService {
         'trainingType': trainingType,
         'sessionDate': Timestamp.fromDate(today),
       });
-      debugPrint("Training session logged for $trainingType on $today");
+      debugPrint('Training session logged for $trainingType on $today');
     } else {
       debugPrint(
-        "Training session for $trainingType already logged for today.",
+        'Training session for $trainingType already logged for today.',
       );
     }
   }
@@ -47,10 +46,9 @@ class TrainingService {
         .where('trainingType', isEqualTo: trainingType)
         .snapshots()
         .map(
-          (snapshot) =>
-              snapshot.docs
-                  .map((doc) => TrainingSession.fromMap(doc.id, doc.data()))
-                  .toList(),
+          (snapshot) => snapshot.docs
+              .map((doc) => TrainingSession.fromMap(doc.id, doc.data()))
+              .toList(),
         );
   }
 
@@ -63,10 +61,9 @@ class TrainingService {
         .where('userId', isEqualTo: userId)
         .snapshots()
         .map(
-          (snapshot) =>
-              snapshot.docs
-                  .map((doc) => TrainingSession.fromMap(doc.id, doc.data()))
-                  .toList(),
+          (snapshot) => snapshot.docs
+              .map((doc) => TrainingSession.fromMap(doc.id, doc.data()))
+              .toList(),
         );
   }
 }

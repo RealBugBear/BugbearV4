@@ -17,10 +17,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
-
-        ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
-        }
+        // <-- Removed explicit ABI filters so all Flutter engine libraries are bundled
     }
 
     compileOptions {

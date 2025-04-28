@@ -1,18 +1,17 @@
 // File: lib/screens/spinalergalant_screen.dart
 
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:bugbear_app/widgets/custom_button.dart';
+import 'package:flutter/material.dart';
+import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/widgets/cycle_info_card.dart';
 import 'package:bugbear_app/widgets/timer_ring.dart' as timer_ring;
 import 'package:bugbear_app/services/training_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/services/sound_manager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
 class SpinalergalantScreen extends StatefulWidget {
-  const SpinalergalantScreen({super.key});
+  const SpinalergalantScreen({Key? key}) : super(key: key);
 
   @override
   State<SpinalergalantScreen> createState() => _SpinalergalantScreenState();
@@ -30,6 +29,7 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
   bool isRunning = false;
   bool isExercise = true;
   Timer? _timer;
+
   final TrainingService _trainingService = TrainingService();
 
   @override
@@ -87,7 +87,7 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
         setState(() => remainingTime--);
       } else {
         timer.cancel();
-        SoundManager().stopLoop(SoundType.tick);
+        SoundManager().stopLoop();
         setState(() => isExercise = false);
         _startPausePhase();
       }
@@ -124,24 +124,23 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
     if (!mounted) return;
     showDialog(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            title: Text(S.of(context).cycleComplete(currentCycle)),
-            content: Text(
-              currentCycle < totalCycles
-                  ? S.of(context).pressStartNextCycle
-                  : S.of(context).allCyclesCompleted,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                  if (currentCycle >= totalCycles) _resetAll();
-                },
-                child: Text(S.of(context).ok),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        title: Text(S.of(context).cycleComplete(currentCycle)),
+        content: Text(
+          currentCycle < totalCycles
+              ? S.of(context).pressStartNextCycle
+              : S.of(context).allCyclesCompleted,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              if (currentCycle >= totalCycles) _resetAll();
+            },
+            child: Text(S.of(context).ok),
           ),
+        ],
+      ),
     );
     setState(() => isRunning = false);
   }
@@ -190,7 +189,8 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
                 progress: progress.clamp(0, 1),
                 size: 120,
                 backgroundColor: Colors.grey.shade300,
-                progressColor: isExercise ? Colors.green : Colors.orangeAccent,
+                progressColor:
+                    isExercise ? Colors.green : Colors.orangeAccent,
               ),
               const SizedBox(height: 20),
               CycleInfoCard(
@@ -204,14 +204,14 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
               ),
               const SizedBox(height: 30),
               if (!isRunning && currentCycle < totalCycles)
-                CustomButton(
-                  text: S.of(context).startCycle(currentCycle + 1),
+                ElevatedButton(
                   onPressed: _startCycle,
+                  child: Text('▶️ Start cycle $_displayCycleIndex'),
                 ),
               if (!isRunning && currentCycle >= totalCycles)
-                CustomButton(
-                  text: S.of(context).resetAll,
+                ElevatedButton(
                   onPressed: _resetAll,
+                  child: Text(S.of(context).resetAll),
                 ),
             ],
           ),

@@ -3,83 +3,55 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:bugbear_app/generated/l10n.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/firebase_options.dart';
 import 'package:bugbear_app/screens/login_screen.dart';
 import 'package:bugbear_app/screens/profile_screen.dart';
-// Prefix imports to avoid name conflicts:
-import 'package:bugbear_app/screens/spinalergalant_screen.dart' as spinal;
-import 'package:bugbear_app/screens/moro_trainer_screen.dart' as moro;
 import 'package:bugbear_app/screens/passwort_reset_screen.dart';
 import 'package:bugbear_app/screens/sound_settings_screen.dart';
-
-import 'package:bugbear_app/notification_service.dart';
+import 'package:bugbear_app/screens/spinalergalant_screen.dart' as spinal;
+import 'package:bugbear_app/screens/moro_trainer_screen.dart' as moro;
 import 'package:bugbear_app/services/sound_manager.dart';
 import 'package:bugbear_app/services/sound_packs.dart';
 import 'package:bugbear_app/providers/locale_provider.dart';
+import 'package:bugbear_app/models/quiz_model.dart';
+import 'package:bugbear_app/screens/quiz_screen.dart';
+import 'package:bugbear_app/screens/results_screen.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-// Global plugin for local notifications
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+final FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // 1. SoundManager init with classic pack (preload-assets)
   await SoundManager().init(pack: classicpack);
-
-  // 2. Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // 3. Android-specific notification settings
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  // 4. Global notification settings
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-  );
-
-  // 5. Initialize notification plugin
-  await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse: (NotificationResponse response) async {
-      final payload = response.payload;
-      if (payload != null) {
-        debugPrint('Notification payload: $payload');
-      }
-    },
-  );
+  const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const initSettings = InitializationSettings(android: androidInit);
+  await notificationsPlugin.initialize(initSettings);
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => LocaleProvider(),
-      child: const MyApp(), // nothing changes here
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => QuizModel()),
+      ],
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  // ✨ NEW: allow injecting a LocaleProvider for tests
-  final LocaleProvider? testLocaleProvider;
-  const MyApp({super.key, this.testLocaleProvider});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // use the injected provider if present, otherwise read from context
-    final provider = testLocaleProvider ?? Provider.of<LocaleProvider>(context);
-    final locale = provider.locale;
-
+    final locale = Provider.of<LocaleProvider>(context).locale;
     return MaterialApp(
-      // Dynamic title after localization loaded
-      onGenerateTitle: (ctx) => S.of(ctx).appTitle,
       locale: locale,
-      supportedLocales: S.delegate.supportedLocales,
+      supportedLocales: const [Locale('en'), Locale('de')],
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -88,39 +60,41 @@ class MyApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: StreamBuilder<User?>(
-        // no change here
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-          if (snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(title: Text(S.of(context).overallProgressTitle)),
-              drawer: const AppDrawer(),
-              body: ProfileScreen(),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () async {
-                  await SoundManager().playOnce(SoundType.start);
-                  showTrainingNotification();
-                },
-                child: const Icon(Icons.notifications),
-              ),
-            );
-          }
-          return const LoginScreen();
-        },
-      ),
+      initialRoute: '/',
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/profile': (context) => ProfileScreen(),
-        '/spinalergalant': (context) => spinal.SpinalergalantScreen(),
-        '/moro': (context) => moro.MoroTrainerScreen(),
-        '/reset-password': (context) => const PasswordResetScreen(),
-        '/sound-settings': (context) => const SoundSettingsScreen(),
+        '/': (_) => RootScreen(),
+        '/login': (_) => LoginScreen(),
+        '/profile': (_) => ProfileScreen(),
+        '/spinalergalant': (_) => const spinal.SpinalergalantScreen(),
+        '/moro': (_) => const moro.MoroTrainerScreen(),
+        '/reset-password': (_) => const PasswordResetScreen(),
+        '/sound-settings': (_) => const SoundSettingsScreen(),
+        '/quiz': (_) => const QuizScreen(),
+        '/results': (_) => const ResultsScreen(),
+      },
+    );
+  }
+}
+
+class RootScreen extends StatelessWidget {
+  final FirebaseAuth auth;
+
+  // no longer const; FirebaseAuth.instance is not a compile-time constant
+  RootScreen({Key? key, FirebaseAuth? auth})
+      : auth = auth ?? FirebaseAuth.instance,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: auth.authStateChanges(),
+      builder: (ctx, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return snap.hasData ? ProfileScreen() : LoginScreen();
       },
     );
   }
