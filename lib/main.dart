@@ -1,3 +1,5 @@
+// File: lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,6 +24,7 @@ import 'package:bugbear_app/screens/moro_trainer_screen.dart' as moro;
 import 'package:bugbear_app/screens/debug_audio_screen.dart';
 import 'package:bugbear_app/screens/quiz_screen.dart';
 import 'package:bugbear_app/screens/results_screen.dart';
+import 'package:bugbear_app/screens/reflex_profile_screen.dart';  // neu
 
 final FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -74,27 +77,25 @@ class MyApp extends StatelessWidget {
         '/moro': (_) => moro.MoroTrainerScreen(),
         '/reset-password': (_) => PasswordResetScreen(),
         '/sound-settings': (_) => SoundSettingsScreen(),
-        '/quiz': (_) => QuizScreen(),
-        '/results': (_) => ResultsScreen(),
+        '/quiz': (_) => const QuizScreen(),
+        '/results': (_) => const ResultsScreen(),
+        '/reflex_profile': (_) => const ReflexProfileScreen(),  // neu
         '/debug-audio': (_) => DebugAudioScreen(),
       },
     );
   }
 }
 
-/// Shows either the ProfileScreen (if logged in) or LoginScreen.
 class RootScreen extends StatelessWidget {
   final FirebaseAuth auth;
   final Widget Function(BuildContext, User?) builder;
 
-  // Nicht const, weil wir zur Laufzeit einen default-Closure verwenden.
   RootScreen({
     Key? key,
     FirebaseAuth? auth,
     Widget Function(BuildContext, User?)? builder,
   })  : auth = auth ?? FirebaseAuth.instance,
-        builder = builder ??
-            ((_, user) => user != null ? ProfileScreen() : LoginScreen()),
+        builder = builder ?? ((_, user) => user != null ? ProfileScreen() : LoginScreen()),
         super(key: key);
 
   @override

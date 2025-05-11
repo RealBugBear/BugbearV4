@@ -10,6 +10,7 @@ class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   void _navigate(BuildContext context, String routeName) {
+    Navigator.of(context).pop();
     Navigator.of(context).pushNamed(routeName);
   }
 
@@ -103,11 +104,18 @@ class AppDrawer extends StatelessWidget {
             onTap: () => _navigate(context, '/sound-settings'),
           ),
 
-          // Neuer Eintrag für das Quiz
+          // Quiz-Eintrag
           ListTile(
             leading: const Icon(Icons.quiz),
             title: Text(S.of(context).quizTitle),
             onTap: () => _navigate(context, '/quiz'),
+          ),
+
+          // Reflex-Profil (gespeicherte Ergebnisse)
+          ListTile(
+            leading: const Icon(Icons.assessment),
+            title: const Text('Reflex-Profil'),
+            onTap: () => _navigate(context, '/reflex_profile'),
           ),
 
           // Debug-Audio Eintrag
