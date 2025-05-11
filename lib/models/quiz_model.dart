@@ -1,10 +1,6 @@
-// File: lib/models/quiz_model.dart
-
 import 'package:flutter/material.dart';
 import 'package:bugbear_app/models/quiz_question.dart';
 import 'package:bugbear_app/models/reflex_category.dart';
-
-// switch to our JSON-based services:
 import 'package:bugbear_app/services/local_question_service.dart';
 import 'package:bugbear_app/services/local_category_service.dart';
 
@@ -63,11 +59,12 @@ class QuizModel extends ChangeNotifier {
   /// Wandelt die rohen Punktzahlen in Prozent um.
   void _calculateScores() {
     for (var cat in categories) {
-      final total = questions
-          .where((q) => q.categoryIds.contains(cat.id))
-          .length;
+      final total = questions.where((q) => q.categoryIds.contains(cat.id)).length;
       cat.score = total == 0 ? 0 : (cat.score / total) * 100;
     }
     notifyListeners();
   }
+
+  /// Öffentliche Schnittstelle für manuelles Recalculaten (z.B. im QuizScreen).
+  void calculateScores() => _calculateScores();
 }
