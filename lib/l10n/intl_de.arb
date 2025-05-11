@@ -1,89 +1,248 @@
 {
-    "@@locale": "de",
-    "appTitle": "Bugbear App",
-    "quizTitle": "Reflex-Quiz",
-    "loginTitle": "Login",
-    "emailLabel": "Email",
-    "passwordLabel": "Passwort",
-    "loginButton": "Anmelden",
-    "registerButton": "Registrieren",
-    "forgotPassword": "Passwort vergessen?",
-    "resultHeader": "Ihr Reflex-Profil",
-    "screenshotHint": "Machen Sie einen Screenshot, um Ihre Ergebnisse zu speichern.",
-    "loginErrorDefault": "Anmeldefehler",
-    "registrationErrorDefault": "Registrierungsfehler",
-    "unknownError": "Unbekannter Fehler",
-  
-    "moroTrainerTitle": "Moro Trainer",
-    "getIntoPosition": "Nimm Position für Übung {idx} ein.",
-    "@getIntoPosition": {
-      "description": "Aufforderung vor Übung Nummer",
-      "placeholders": { "idx": {} }
-    },
-    "exerciseInProgress": "Übung {idx} läuft.",
-    "@exerciseInProgress": {
-      "description": "Hinweis während der Übung",
-      "placeholders": { "idx": {} }
-    },
-    "exerciseDone": "Übung {idx} abgeschlossen.",
-    "@exerciseDone": {
-      "description": "Hinweis nach Abschluss der Übung",
-      "placeholders": { "idx": {} }
-    },
-    "cycleComplete": "Zyklus {cycle} abgeschlossen",
-    "@cycleComplete": {
-      "description": "Dialogtitel nach Abschluss eines Zyklus",
-      "placeholders": { "cycle": {} }
-    },
-    "pressStartNextCycle": "Drücke START für den nächsten Zyklus.",
-    "allCyclesCompleted": "Alle Zyklen abgeschlossen!",
-    "ok": "OK",
-    "startCycle": "▶️ Starte Zyklus {idx}",
-    "@startCycle": {
-      "description": "Buttontext zum Starten eines Zyklus",
-      "placeholders": { "idx": {} }
-    },
-    "resetAll": "Alles zurücksetzen",
-  
-    "resetPasswordTitle": "Passwort zurücksetzen",
-    "resetPasswordInstruction": "Gib deine E-Mail-Adresse ein, um eine Passwort-Zurücksetzungs-E-Mail zu erhalten:",
-    "resetButton": "Zurücksetzen",
-    "resetEmailSent": "Die Passwort-Zurücksetzungs-E-Mail wurde gesendet.",
-    "passwordResetError": "Fehler: {message}",
-    "@passwordResetError": {
-      "description": "Fehlermeldung, wenn das Zurücksetzen des Passworts fehlschlägt",
-      "placeholders": { "message": {} }
-    },
-    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
-  
-    "profileTitle": "Profil",
-    "userNotLoggedIn": "Benutzer nicht angemeldet.",
-    "overallProgressTitle": "Gesamtfortschritt-Kalender",
-    "errorLoading": "Fehler: {error}",
-    "@errorLoading": {
-      "description": "Fehlermeldung beim Laden der Trainingsdaten",
-      "placeholders": { "error": {} }
-    },
-    "dayMo": "Mo",
-    "dayDi": "Di",
-    "dayMi": "Mi",
-    "dayDo": "Do",
-    "dayFr": "Fr",
-    "daySa": "Sa",
-    "daySo": "So",
-  
-    "defaultUsername": "Benutzer",
-    "defaultEmail": "Keine E-Mail",
-    "home": "Start",
-    "spinalergalantTrainerTitle": "Spinalergalant Trainer",
-    "soundSettingsTitle": "Sound-Pakete",
-    "logOut": "Abmelden",
-    "languageSettings": "Sprache",
-    "selectLanguage": "Sprache wählen",
-    "english": "Englisch",
-    "german": "Deutsch",
-  
-    "memepack": "Memepack",
-    "classicpack": "Classicpack"
-  }
-  
+  "@@locale": "de",
+  "yes": "Ja",
+  "@yes": {
+    "description": "Antwort-Button 'Ja'"
+  },
+  "no": "Nein",
+  "@no": {
+    "description": "Antwort-Button 'Nein'"
+  },
+  "appTitle": "Bugbear App",
+  "@appTitle": {
+    "description": "Titel der App"
+  },
+  "quizTitle": "Reflex-Quiz",
+  "@quizTitle": {
+    "description": "Titel des Quiz-Bildschirms"
+  },
+  "loginTitle": "Login",
+  "@loginTitle": {
+    "description": "Titel des Login-Bildschirms"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label für E-Mail-Feld"
+  },
+  "passwordLabel": "Passwort",
+  "@passwordLabel": {
+    "description": "Label für Passwort-Feld"
+  },
+  "loginButton": "Anmelden",
+  "@loginButton": {
+    "description": "Text des Anmelde-Buttons"
+  },
+  "registerButton": "Registrieren",
+  "@registerButton": {
+    "description": "Text des Registrieren-Buttons"
+  },
+  "forgotPassword": "Passwort vergessen?",
+  "@forgotPassword": {
+    "description": "Link-Text für Passwort zurücksetzen"
+  },
+  "resultHeader": "Ihr Reflex-Profil",
+  "@resultHeader": {
+    "description": "Überschrift der Ergebnisseite"
+  },
+  "screenshotHint": "Machen Sie einen Screenshot, um Ihre Ergebnisse zu speichern.",
+  "@screenshotHint": {
+    "description": "Hinweis auf Screenshot"
+  },
+  "loginErrorDefault": "Anmeldefehler",
+  "@loginErrorDefault": {
+    "description": "Standard-Fehlermeldung bei Anmeldung"
+  },
+  "registrationErrorDefault": "Registrierungsfehler",
+  "@registrationErrorDefault": {
+    "description": "Standard-Fehlermeldung bei Registrierung"
+  },
+  "unknownError": "Unbekannter Fehler",
+  "@unknownError": {
+    "description": "Allgemeine Fehlermeldung"
+  },
+  "moroTrainerTitle": "Moro Trainer",
+  "@moroTrainerTitle": {
+    "description": "Titel des Moro-Trainer-Bildschirms"
+  },
+  "getIntoPosition": "Nimm Position für Übung {idx} ein.",
+  "@getIntoPosition": {
+    "description": "Aufforderung vor Übung-Nummer",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "exerciseInProgress": "Übung {idx} läuft.",
+  "@exerciseInProgress": {
+    "description": "Hinweis während der Übung",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "exerciseDone": "Übung {idx} abgeschlossen.",
+  "@exerciseDone": {
+    "description": "Hinweis nach Abschluss der Übung",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "cycleComplete": "Zyklus {cycle} abgeschlossen",
+  "@cycleComplete": {
+    "description": "Dialogtitel nach Abschluss eines Zyklus",
+    "placeholders": {
+      "cycle": {}
+    }
+  },
+  "pressStartNextCycle": "Drücke START für den nächsten Zyklus.",
+  "@pressStartNextCycle": {
+    "description": "Button-Hinweis für nächsten Zyklus"
+  },
+  "allCyclesCompleted": "Alle Zyklen abgeschlossen!",
+  "@allCyclesCompleted": {
+    "description": "Dialog, wenn alle Zyklen fertig sind"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Text für OK-Button"
+  },
+  "startCycle": "▶️ Starte Zyklus {idx}",
+  "@startCycle": {
+    "description": "Button-Text zum Starten eines Zyklus",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "resetAll": "Alles zurücksetzen",
+  "@resetAll": {
+    "description": "Button zum Zurücksetzen"
+  },
+  "resetPasswordTitle": "Passwort zurücksetzen",
+  "@resetPasswordTitle": {
+    "description": "Titel des Passwort-Zurücksetzen-Bildschirms"
+  },
+  "resetPasswordInstruction": "Gib deine E-Mail-Adresse ein, um eine Passwort-Zurücksetzungs-E-Mail zu erhalten:",
+  "@resetPasswordInstruction": {
+    "description": "Anleitung zum Zurücksetzen des Passworts"
+  },
+  "resetButton": "Zurücksetzen",
+  "@resetButton": {
+    "description": "Text des Zurücksetzen-Buttons"
+  },
+  "resetEmailSent": "Die Passwort-Zurücksetzungs-E-Mail wurde gesendet.",
+  "@resetEmailSent": {
+    "description": "Hinweis nach Versand der Reset-Email"
+  },
+  "passwordResetError": "Fehler: {message}",
+  "@passwordResetError": {
+    "description": "Fehlermeldung, wenn Zurücksetzen fehlschlägt",
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+  "@unexpectedError": {
+    "description": "Allgemeine Fehlermeldung"
+  },
+  "profileTitle": "Profil",
+  "@profileTitle": {
+    "description": "Titel des Profil-Bildschirms"
+  },
+  "userNotLoggedIn": "Benutzer nicht angemeldet.",
+  "@userNotLoggedIn": {
+    "description": "Meldung, wenn nicht eingeloggt"
+  },
+  "overallProgressTitle": "Gesamtfortschritt-Kalender",
+  "@overallProgressTitle": {
+    "description": "Überschrift Gesamtfortschritt"
+  },
+  "errorLoading": "Fehler: {error}",
+  "@errorLoading": {
+    "description": "Fehlermeldung beim Laden der Daten",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "dayMo": "Mo",
+  "@dayMo": {
+    "description": "Montag-Abkürzung"
+  },
+  "dayDi": "Di",
+  "@dayDi": {
+    "description": "Dienstag-Abkürzung"
+  },
+  "dayMi": "Mi",
+  "@dayMi": {
+    "description": "Mittwoch-Abkürzung"
+  },
+  "dayDo": "Do",
+  "@dayDo": {
+    "description": "Donnerstag-Abkürzung"
+  },
+  "dayFr": "Fr",
+  "@dayFr": {
+    "description": "Freitag-Abkürzung"
+  },
+  "daySa": "Sa",
+  "@daySa": {
+    "description": "Samstag-Abkürzung"
+  },
+  "daySo": "So",
+  "@daySo": {
+    "description": "Sonntag-Abkürzung"
+  },
+  "defaultUsername": "Benutzer",
+  "@defaultUsername": {
+    "description": "Platzhalter für Benutzernamen"
+  },
+  "defaultEmail": "Keine E-Mail",
+  "@defaultEmail": {
+    "description": "Platzhalter für E-Mail"
+  },
+  "home": "Start",
+  "@home": {
+    "description": "Navigationspunkt Start"
+  },
+  "spinalergalantTrainerTitle": "Spinalergalant Trainer",
+  "@spinalergalantTrainerTitle": {
+    "description": "Titel des Spinalergalant-Bildschirms"
+  },
+  "soundSettingsTitle": "Sound-Pakete",
+  "@soundSettingsTitle": {
+    "description": "Titel der Sound-Einstellungen"
+  },
+  "logOut": "Abmelden",
+  "@logOut": {
+    "description": "Text für Abmelden-Button"
+  },
+  "languageSettings": "Sprache",
+  "@languageSettings": {
+    "description": "Titel der Sprach-Einstellungen"
+  },
+  "selectLanguage": "Sprache wählen",
+  "@selectLanguage": {
+    "description": "Anweisung: Sprache wählen"
+  },
+  "english": "Englisch",
+  "@english": {
+    "description": "Option: Englisch"
+  },
+  "german": "Deutsch",
+  "@german": {
+    "description": "Option: Deutsch"
+  },
+  "memepack": "Memepack",
+  "@memepack": {
+    "description": "Option: Meme-Soundpaket"
+  },
+  "classicpack": "Classicpack",
+  "@classicpack": {
+    "description": "Option: Classic-Soundpaket"
+  },
+  "quizProgress": "Frage {current} von {total}",
+ "@quizProgress": {
+   "description": "Zeigt den aktuellen Quiz-Fortschritt",
+   "placeholders": {
+     "current": {},
+     "total": {}
+   }
+ }
+}

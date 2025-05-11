@@ -1,89 +1,248 @@
 {
-    "@@locale": "en",
-    "appTitle": "Bugbear App",
-    "quizTitle": "Reflex Quiz",
-    "loginTitle": "Login",
-    "emailLabel": "Email",
-    "passwordLabel": "Password",
-    "loginButton": "Login",
-    "registerButton": "Register",
-    "forgotPassword": "Forgot password?",
-    "resultHeader": "Your Reflex Profile",
-    "screenshotHint": "Take a screenshot to save your results.",
-    "loginErrorDefault": "Login error",
-    "registrationErrorDefault": "Registration error",
-    "unknownError": "Unknown error",
-  
-    "moroTrainerTitle": "Moro Trainer",
-    "getIntoPosition": "Get into position for exercise {idx}.",
-    "@getIntoPosition": {
-      "description": "Prompt before starting exercise number",
-      "placeholders": { "idx": {} }
-    },
-    "exerciseInProgress": "Exercise {idx} in progress.",
-    "@exerciseInProgress": {
-      "description": "Prompt while exercise is in progress",
-      "placeholders": { "idx": {} }
-    },
-    "exerciseDone": "Exercise {idx} done.",
-    "@exerciseDone": {
-      "description": "Prompt when exercise is done",
-      "placeholders": { "idx": {} }
-    },
-    "cycleComplete": "Cycle {cycle} complete",
-    "@cycleComplete": {
-      "description": "Dialog title when one cycle is complete",
-      "placeholders": { "cycle": {} }
-    },
-    "pressStartNextCycle": "Press START for the next cycle.",
-    "allCyclesCompleted": "All cycles completed!",
-    "ok": "OK",
-    "startCycle": "▶️ Start cycle {idx}",
-    "@startCycle": {
-      "description": "Button text to start a given cycle",
-      "placeholders": { "idx": {} }
-    },
-    "resetAll": "Reset all",
-  
-    "resetPasswordTitle": "Password Reset",
-    "resetPasswordInstruction": "Enter your email to receive a password reset email:",
-    "resetButton": "Reset",
-    "resetEmailSent": "Password reset email sent.",
-    "passwordResetError": "Error: {message}",
-    "@passwordResetError": {
-      "description": "Error message when password reset fails",
-      "placeholders": { "message": {} }
-    },
-    "unexpectedError": "An unexpected error occurred.",
-  
-    "profileTitle": "Profile",
-    "userNotLoggedIn": "User not logged in.",
-    "overallProgressTitle": "Overall Progress Calendar",
-    "errorLoading": "Error: {error}",
-    "@errorLoading": {
-      "description": "Error message when loading training data",
-      "placeholders": { "error": {} }
-    },
-    "dayMo": "Mo",
-    "dayDi": "Tu",
-    "dayMi": "We",
-    "dayDo": "Th",
-    "dayFr": "Fr",
-    "daySa": "Sa",
-    "daySo": "Su",
-  
-    "defaultUsername": "User",
-    "defaultEmail": "No email",
-    "home": "Home",
-    "spinalergalantTrainerTitle": "Spinalergalant Trainer",
-    "soundSettingsTitle": "Sound Packs",
-    "logOut": "Log Out",
-    "languageSettings": "Language",
-    "selectLanguage": "Select Language",
-    "english": "English",
-    "german": "German",
-  
-    "memepack": "Memepack",
-    "classicpack": "Classicpack"
-  }
-  
+  "@@locale": "en",
+  "yes": "Yes",
+  "@yes": {
+    "description": "Label for affirmative quiz answer"
+  },
+  "no": "No",
+  "@no": {
+    "description": "Label for negative quiz answer"
+  },
+  "appTitle": "Bugbear App",
+  "@appTitle": {
+    "description": "App title"
+  },
+  "quizTitle": "Reflex Quiz",
+  "@quizTitle": {
+    "description": "Title of the quiz screen"
+  },
+  "loginTitle": "Login",
+  "@loginTitle": {
+    "description": "Title of the login screen"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label for email field"
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label for password field"
+  },
+  "loginButton": "Login",
+  "@loginButton": {
+    "description": "Text for the login button"
+  },
+  "registerButton": "Register",
+  "@registerButton": {
+    "description": "Text for the register button"
+  },
+  "forgotPassword": "Forgot password?",
+  "@forgotPassword": {
+    "description": "Link text for password reset"
+  },
+  "resultHeader": "Your Reflex Profile",
+  "@resultHeader": {
+    "description": "Header on the results screen"
+  },
+  "screenshotHint": "Take a screenshot to save your results.",
+  "@screenshotHint": {
+    "description": "Hint to screenshot results"
+  },
+  "loginErrorDefault": "Login error",
+  "@loginErrorDefault": {
+    "description": "Default login error message"
+  },
+  "registrationErrorDefault": "Registration error",
+  "@registrationErrorDefault": {
+    "description": "Default registration error message"
+  },
+  "unknownError": "Unknown error",
+  "@unknownError": {
+    "description": "Generic error message"
+  },
+  "moroTrainerTitle": "Moro Trainer",
+  "@moroTrainerTitle": {
+    "description": "Title of the Moro Trainer screen"
+  },
+  "getIntoPosition": "Get into position for exercise {idx}.",
+  "@getIntoPosition": {
+    "description": "Prompt before starting exercise number",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "exerciseInProgress": "Exercise {idx} in progress.",
+  "@exerciseInProgress": {
+    "description": "Prompt while exercise is in progress",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "exerciseDone": "Exercise {idx} done.",
+  "@exerciseDone": {
+    "description": "Prompt when exercise is done",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "cycleComplete": "Cycle {cycle} complete",
+  "@cycleComplete": {
+    "description": "Dialog title when one cycle is complete",
+    "placeholders": {
+      "cycle": {}
+    }
+  },
+  "pressStartNextCycle": "Press START for the next cycle.",
+  "@pressStartNextCycle": {
+    "description": "Button hint for next cycle"
+  },
+  "allCyclesCompleted": "All cycles completed!",
+  "@allCyclesCompleted": {
+    "description": "Dialog when all cycles are done"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "Text for OK button"
+  },
+  "startCycle": "▶️ Start cycle {idx}",
+  "@startCycle": {
+    "description": "Button text to start a given cycle",
+    "placeholders": {
+      "idx": {}
+    }
+  },
+  "resetAll": "Reset all",
+  "@resetAll": {
+    "description": "Button to reset everything"
+  },
+  "resetPasswordTitle": "Password Reset",
+  "@resetPasswordTitle": {
+    "description": "Title of the password-reset screen"
+  },
+  "resetPasswordInstruction": "Enter your email to receive a password reset email:",
+  "@resetPasswordInstruction": {
+    "description": "Instruction for password reset"
+  },
+  "resetButton": "Reset",
+  "@resetButton": {
+    "description": "Text for reset button"
+  },
+  "resetEmailSent": "Password reset email sent.",
+  "@resetEmailSent": {
+    "description": "Notice after reset email is sent"
+  },
+  "passwordResetError": "Error: {message}",
+  "@passwordResetError": {
+    "description": "Error message when password reset fails",
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "unexpectedError": "An unexpected error occurred.",
+  "@unexpectedError": {
+    "description": "Generic unexpected error message"
+  },
+  "profileTitle": "Profile",
+  "@profileTitle": {
+    "description": "Title of the profile screen"
+  },
+  "userNotLoggedIn": "User not logged in.",
+  "@userNotLoggedIn": {
+    "description": "Message when user is not logged in"
+  },
+  "overallProgressTitle": "Overall Progress Calendar",
+  "@overallProgressTitle": {
+    "description": "Header for overall progress calendar"
+  },
+  "errorLoading": "Error: {error}",
+  "@errorLoading": {
+    "description": "Error message when loading training data",
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "dayMo": "Mo",
+  "@dayMo": {
+    "description": "Monday abbreviation"
+  },
+  "dayDi": "Tu",
+  "@dayDi": {
+    "description": "Tuesday abbreviation"
+  },
+  "dayMi": "We",
+  "@dayMi": {
+    "description": "Wednesday abbreviation"
+  },
+  "dayDo": "Th",
+  "@dayDo": {
+    "description": "Thursday abbreviation"
+  },
+  "dayFr": "Fr",
+  "@dayFr": {
+    "description": "Friday abbreviation"
+  },
+  "daySa": "Sa",
+  "@daySa": {
+    "description": "Saturday abbreviation"
+  },
+  "daySo": "Su",
+  "@daySo": {
+    "description": "Sunday abbreviation"
+  },
+  "defaultUsername": "User",
+  "@defaultUsername": {
+    "description": "Placeholder for username"
+  },
+  "defaultEmail": "No email",
+  "@defaultEmail": {
+    "description": "Placeholder for email"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Navigation label for home"
+  },
+  "spinalergalantTrainerTitle": "Spinalergalant Trainer",
+  "@spinalergalantTrainerTitle": {
+    "description": "Title of the Spinalergalant screen"
+  },
+  "soundSettingsTitle": "Sound Packs",
+  "@soundSettingsTitle": {
+    "description": "Title of sound settings screen"
+  },
+  "logOut": "Log Out",
+  "@logOut": {
+    "description": "Text for log out button"
+  },
+  "languageSettings": "Language",
+  "@languageSettings": {
+    "description": "Title of language settings"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Instruction to select language"
+  },
+  "english": "English",
+  "@english": {
+    "description": "Option: English"
+  },
+  "german": "German",
+  "@german": {
+    "description": "Option: German"
+  },
+  "memepack": "Memepack",
+  "@memepack": {
+    "description": "Option: meme sound pack"
+  },
+  "classicpack": "Classicpack",
+  "@classicpack": {
+    "description": "Option: classic sound pack"
+  },
+  "quizProgress": "Question {current} of {total}",
+   "@quizProgress": {
+     "description": "Shows the current quiz progress",
+     "placeholders": {
+       "current": {},
+       "total": {}
+     }
+   }
+}

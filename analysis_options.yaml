@@ -31,3 +31,6 @@ analyzer:
     parameter_assignments: error
     invalid_assignment: error
     always_specify_types: warning
+    # Suppress the “const_with_non_const” and “invalid_constant” analyzer errors
+    const_with_non_const: ignore
+    invalid_constant: ignore

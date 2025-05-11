@@ -24,7 +24,7 @@ class TimerRing extends StatelessWidget {
         progress: progress,
         backgroundColor: backgroundColor,
         progressColor: progressColor,
-      ),
+      ), // cannot be const because _TimerRingPainter is not const
     );
   }
 }
@@ -42,32 +42,26 @@ class _TimerRingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Define stroke width and calculate center and radius.
     const strokeWidth = 8.0;
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - strokeWidth) / 2;
 
-    // Draw the background circle.
-    final bgPaint =
-        Paint()
-          ..color = backgroundColor
-          ..strokeWidth = strokeWidth
-          ..style = PaintingStyle.stroke;
+    final bgPaint = Paint()
+      ..color = backgroundColor
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
     canvas.drawCircle(center, radius, bgPaint);
 
-    // Draw the progress arc.
-    final progressPaint =
-        Paint()
-          ..color = progressColor
-          ..strokeWidth = strokeWidth
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round;
+    final progressPaint = Paint()
+      ..color = progressColor
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
 
-    // Calculate the sweep angle based on the progress value.
     final sweepAngle = 2 * pi * progress;
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
-      -pi / 2, // Start from the top
+      -pi / 2,
       sweepAngle,
       false,
       progressPaint,
@@ -75,7 +69,5 @@ class _TimerRingPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true; // Repaint whenever the progress value changes.
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

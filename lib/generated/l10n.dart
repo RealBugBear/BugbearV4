@@ -55,39 +55,94 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Yes`
+  String get yes {
+    return Intl.message(
+      'Yes',
+      name: 'yes',
+      desc: 'Label for affirmative quiz answer',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message(
+      'No',
+      name: 'no',
+      desc: 'Label for negative quiz answer',
+      args: [],
+    );
+  }
+
   /// `Bugbear App`
   String get appTitle {
-    return Intl.message('Bugbear App', name: 'appTitle', desc: '', args: []);
+    return Intl.message(
+      'Bugbear App',
+      name: 'appTitle',
+      desc: 'App title',
+      args: [],
+    );
   }
 
   /// `Reflex Quiz`
   String get quizTitle {
-    return Intl.message('Reflex Quiz', name: 'quizTitle', desc: '', args: []);
+    return Intl.message(
+      'Reflex Quiz',
+      name: 'quizTitle',
+      desc: 'Title of the quiz screen',
+      args: [],
+    );
   }
 
   /// `Login`
   String get loginTitle {
-    return Intl.message('Login', name: 'loginTitle', desc: '', args: []);
+    return Intl.message(
+      'Login',
+      name: 'loginTitle',
+      desc: 'Title of the login screen',
+      args: [],
+    );
   }
 
   /// `Email`
   String get emailLabel {
-    return Intl.message('Email', name: 'emailLabel', desc: '', args: []);
+    return Intl.message(
+      'Email',
+      name: 'emailLabel',
+      desc: 'Label for email field',
+      args: [],
+    );
   }
 
   /// `Password`
   String get passwordLabel {
-    return Intl.message('Password', name: 'passwordLabel', desc: '', args: []);
+    return Intl.message(
+      'Password',
+      name: 'passwordLabel',
+      desc: 'Label for password field',
+      args: [],
+    );
   }
 
   /// `Login`
   String get loginButton {
-    return Intl.message('Login', name: 'loginButton', desc: '', args: []);
+    return Intl.message(
+      'Login',
+      name: 'loginButton',
+      desc: 'Text for the login button',
+      args: [],
+    );
   }
 
   /// `Register`
   String get registerButton {
-    return Intl.message('Register', name: 'registerButton', desc: '', args: []);
+    return Intl.message(
+      'Register',
+      name: 'registerButton',
+      desc: 'Text for the register button',
+      args: [],
+    );
   }
 
   /// `Forgot password?`
@@ -95,7 +150,7 @@ class S {
     return Intl.message(
       'Forgot password?',
       name: 'forgotPassword',
-      desc: '',
+      desc: 'Link text for password reset',
       args: [],
     );
   }
@@ -105,7 +160,7 @@ class S {
     return Intl.message(
       'Your Reflex Profile',
       name: 'resultHeader',
-      desc: '',
+      desc: 'Header on the results screen',
       args: [],
     );
   }
@@ -115,7 +170,7 @@ class S {
     return Intl.message(
       'Take a screenshot to save your results.',
       name: 'screenshotHint',
-      desc: '',
+      desc: 'Hint to screenshot results',
       args: [],
     );
   }
@@ -125,7 +180,7 @@ class S {
     return Intl.message(
       'Login error',
       name: 'loginErrorDefault',
-      desc: '',
+      desc: 'Default login error message',
       args: [],
     );
   }
@@ -135,7 +190,7 @@ class S {
     return Intl.message(
       'Registration error',
       name: 'registrationErrorDefault',
-      desc: '',
+      desc: 'Default registration error message',
       args: [],
     );
   }
@@ -145,7 +200,7 @@ class S {
     return Intl.message(
       'Unknown error',
       name: 'unknownError',
-      desc: '',
+      desc: 'Generic error message',
       args: [],
     );
   }
@@ -155,7 +210,7 @@ class S {
     return Intl.message(
       'Moro Trainer',
       name: 'moroTrainerTitle',
-      desc: '',
+      desc: 'Title of the Moro Trainer screen',
       args: [],
     );
   }
@@ -205,7 +260,7 @@ class S {
     return Intl.message(
       'Press START for the next cycle.',
       name: 'pressStartNextCycle',
-      desc: '',
+      desc: 'Button hint for next cycle',
       args: [],
     );
   }
@@ -215,14 +270,14 @@ class S {
     return Intl.message(
       'All cycles completed!',
       name: 'allCyclesCompleted',
-      desc: '',
+      desc: 'Dialog when all cycles are done',
       args: [],
     );
   }
 
   /// `OK`
   String get ok {
-    return Intl.message('OK', name: 'ok', desc: '', args: []);
+    return Intl.message('OK', name: 'ok', desc: 'Text for OK button', args: []);
   }
 
   /// `▶️ Start cycle {idx}`
@@ -237,7 +292,12 @@ class S {
 
   /// `Reset all`
   String get resetAll {
-    return Intl.message('Reset all', name: 'resetAll', desc: '', args: []);
+    return Intl.message(
+      'Reset all',
+      name: 'resetAll',
+      desc: 'Button to reset everything',
+      args: [],
+    );
   }
 
   /// `Password Reset`
@@ -245,7 +305,7 @@ class S {
     return Intl.message(
       'Password Reset',
       name: 'resetPasswordTitle',
-      desc: '',
+      desc: 'Title of the password-reset screen',
       args: [],
     );
   }
@@ -255,14 +315,19 @@ class S {
     return Intl.message(
       'Enter your email to receive a password reset email:',
       name: 'resetPasswordInstruction',
-      desc: '',
+      desc: 'Instruction for password reset',
       args: [],
     );
   }
 
   /// `Reset`
   String get resetButton {
-    return Intl.message('Reset', name: 'resetButton', desc: '', args: []);
+    return Intl.message(
+      'Reset',
+      name: 'resetButton',
+      desc: 'Text for reset button',
+      args: [],
+    );
   }
 
   /// `Password reset email sent.`
@@ -270,7 +335,7 @@ class S {
     return Intl.message(
       'Password reset email sent.',
       name: 'resetEmailSent',
-      desc: '',
+      desc: 'Notice after reset email is sent',
       args: [],
     );
   }
@@ -290,14 +355,19 @@ class S {
     return Intl.message(
       'An unexpected error occurred.',
       name: 'unexpectedError',
-      desc: '',
+      desc: 'Generic unexpected error message',
       args: [],
     );
   }
 
   /// `Profile`
   String get profileTitle {
-    return Intl.message('Profile', name: 'profileTitle', desc: '', args: []);
+    return Intl.message(
+      'Profile',
+      name: 'profileTitle',
+      desc: 'Title of the profile screen',
+      args: [],
+    );
   }
 
   /// `User not logged in.`
@@ -305,7 +375,7 @@ class S {
     return Intl.message(
       'User not logged in.',
       name: 'userNotLoggedIn',
-      desc: '',
+      desc: 'Message when user is not logged in',
       args: [],
     );
   }
@@ -315,7 +385,7 @@ class S {
     return Intl.message(
       'Overall Progress Calendar',
       name: 'overallProgressTitle',
-      desc: '',
+      desc: 'Header for overall progress calendar',
       args: [],
     );
   }
@@ -332,52 +402,102 @@ class S {
 
   /// `Mo`
   String get dayMo {
-    return Intl.message('Mo', name: 'dayMo', desc: '', args: []);
+    return Intl.message(
+      'Mo',
+      name: 'dayMo',
+      desc: 'Monday abbreviation',
+      args: [],
+    );
   }
 
   /// `Tu`
   String get dayDi {
-    return Intl.message('Tu', name: 'dayDi', desc: '', args: []);
+    return Intl.message(
+      'Tu',
+      name: 'dayDi',
+      desc: 'Tuesday abbreviation',
+      args: [],
+    );
   }
 
   /// `We`
   String get dayMi {
-    return Intl.message('We', name: 'dayMi', desc: '', args: []);
+    return Intl.message(
+      'We',
+      name: 'dayMi',
+      desc: 'Wednesday abbreviation',
+      args: [],
+    );
   }
 
   /// `Th`
   String get dayDo {
-    return Intl.message('Th', name: 'dayDo', desc: '', args: []);
+    return Intl.message(
+      'Th',
+      name: 'dayDo',
+      desc: 'Thursday abbreviation',
+      args: [],
+    );
   }
 
   /// `Fr`
   String get dayFr {
-    return Intl.message('Fr', name: 'dayFr', desc: '', args: []);
+    return Intl.message(
+      'Fr',
+      name: 'dayFr',
+      desc: 'Friday abbreviation',
+      args: [],
+    );
   }
 
   /// `Sa`
   String get daySa {
-    return Intl.message('Sa', name: 'daySa', desc: '', args: []);
+    return Intl.message(
+      'Sa',
+      name: 'daySa',
+      desc: 'Saturday abbreviation',
+      args: [],
+    );
   }
 
   /// `Su`
   String get daySo {
-    return Intl.message('Su', name: 'daySo', desc: '', args: []);
+    return Intl.message(
+      'Su',
+      name: 'daySo',
+      desc: 'Sunday abbreviation',
+      args: [],
+    );
   }
 
   /// `User`
   String get defaultUsername {
-    return Intl.message('User', name: 'defaultUsername', desc: '', args: []);
+    return Intl.message(
+      'User',
+      name: 'defaultUsername',
+      desc: 'Placeholder for username',
+      args: [],
+    );
   }
 
   /// `No email`
   String get defaultEmail {
-    return Intl.message('No email', name: 'defaultEmail', desc: '', args: []);
+    return Intl.message(
+      'No email',
+      name: 'defaultEmail',
+      desc: 'Placeholder for email',
+      args: [],
+    );
   }
 
   /// `Home`
   String get home {
-    return Intl.message('Home', name: 'home', desc: '', args: []);
+    return Intl.message(
+      'Home',
+      name: 'home',
+      desc: 'Navigation label for home',
+      args: [],
+    );
   }
 
   /// `Spinalergalant Trainer`
@@ -385,7 +505,7 @@ class S {
     return Intl.message(
       'Spinalergalant Trainer',
       name: 'spinalergalantTrainerTitle',
-      desc: '',
+      desc: 'Title of the Spinalergalant screen',
       args: [],
     );
   }
@@ -395,14 +515,19 @@ class S {
     return Intl.message(
       'Sound Packs',
       name: 'soundSettingsTitle',
-      desc: '',
+      desc: 'Title of sound settings screen',
       args: [],
     );
   }
 
   /// `Log Out`
   String get logOut {
-    return Intl.message('Log Out', name: 'logOut', desc: '', args: []);
+    return Intl.message(
+      'Log Out',
+      name: 'logOut',
+      desc: 'Text for log out button',
+      args: [],
+    );
   }
 
   /// `Language`
@@ -410,7 +535,7 @@ class S {
     return Intl.message(
       'Language',
       name: 'languageSettings',
-      desc: '',
+      desc: 'Title of language settings',
       args: [],
     );
   }
@@ -420,29 +545,59 @@ class S {
     return Intl.message(
       'Select Language',
       name: 'selectLanguage',
-      desc: '',
+      desc: 'Instruction to select language',
       args: [],
     );
   }
 
   /// `English`
   String get english {
-    return Intl.message('English', name: 'english', desc: '', args: []);
+    return Intl.message(
+      'English',
+      name: 'english',
+      desc: 'Option: English',
+      args: [],
+    );
   }
 
   /// `German`
   String get german {
-    return Intl.message('German', name: 'german', desc: '', args: []);
+    return Intl.message(
+      'German',
+      name: 'german',
+      desc: 'Option: German',
+      args: [],
+    );
   }
 
   /// `Memepack`
   String get memepack {
-    return Intl.message('Memepack', name: 'memepack', desc: '', args: []);
+    return Intl.message(
+      'Memepack',
+      name: 'memepack',
+      desc: 'Option: meme sound pack',
+      args: [],
+    );
   }
 
   /// `Classicpack`
   String get classicpack {
-    return Intl.message('Classicpack', name: 'classicpack', desc: '', args: []);
+    return Intl.message(
+      'Classicpack',
+      name: 'classicpack',
+      desc: 'Option: classic sound pack',
+      args: [],
+    );
+  }
+
+  /// `Question {current} of {total}`
+  String quizProgress(Object current, Object total) {
+    return Intl.message(
+      'Question $current of $total',
+      name: 'quizProgress',
+      desc: 'Shows the current quiz progress',
+      args: [current, total],
+    );
   }
 }
 

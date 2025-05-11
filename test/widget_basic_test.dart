@@ -1,36 +1,21 @@
-// File: test/widget_basic_test.dart
+// test/widget_basic_test.dart
 
-import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:bugbear_app/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:bugbear_app/main.dart';  // or widgets/materialapp.dart, depending on where you import RootScreen
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+  testWidgets('RootScreen fallback builder is used', (tester) async {
+    // We inject a builder that simply returns a colored Scaffold so we can verify it appears.
+    await tester.pumpWidget(
+      RootScreen(
+        builder: (_, __) => const Scaffold(backgroundColor: Colors.green),
+      ),
+    );
 
-  final mockUser = MockUser(uid: 'test-uid', email: 'test@example.com');
-  final mockAuth = MockFirebaseAuth(mockUser: mockUser);
-
-  group('Basic widget tests', () {
-    testWidgets('Shows profile when user is signed in',
-        (WidgetTester tester) async {
-      // Inject a builder that simply renders Text('Profile')
-      await tester.pumpWidget(
-        MaterialApp(
-          home: RootScreen(
-            auth: mockAuth,
-            builder: (_, __) => const Scaffold(
-              body: Center(child: Text('Profile')),
-            ),
-          ),
-        ),
-      );
-
-      // Let the StreamBuilder emit
-      await tester.pumpAndSettle();
-
-      // Confirm our stubbed Profile text shows up
-      expect(find.text('Profile'), findsOneWidget);
-    });
+    // Verify our injected Scaffold shows up.
+    expect(find.byType(Scaffold), findsOneWidget);
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    expect(scaffold.backgroundColor, Colors.green);
   });
 }

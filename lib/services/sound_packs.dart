@@ -7,7 +7,7 @@ const SoundPack memepack = SoundPack(
   name: 'memepack',
   assets: {
     SoundType.start: 'sounds/letsego.mp3',
-    SoundType.tick:  'sounds/clocktick.wav',   // ← ensure tick is defined
+    SoundType.tick:  'sounds/clocktick.mp3',   // ← ensure tick is defined
     SoundType.pause: 'sounds/daddychill.mp3',
     SoundType.end:   'sounds/greatsuccess.mp3',
   },
@@ -17,9 +17,9 @@ const SoundPack memepack = SoundPack(
 const SoundPack classicpack = SoundPack(
   name: 'classicpack',
   assets: {
-    SoundType.start: 'sounds/start.wav',
-    SoundType.tick:  'sounds/clocktick.wav',
-    SoundType.pause: 'sounds/pause.wav',
-    SoundType.end:   'sounds/ende.wav',
+    SoundType.start: 'sounds/start.mp3',
+    SoundType.tick:  'sounds/clocktick.mp3',
+    SoundType.pause: 'sounds/pause.mp3',
+    SoundType.end:   'sounds/ende.mp3',
   },
 );

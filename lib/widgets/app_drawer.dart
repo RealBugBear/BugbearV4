@@ -26,31 +26,29 @@ class AppDrawer extends StatelessWidget {
   ) {
     showDialog<Locale>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            title: Text(S.of(context).selectLanguage),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children:
-                  S.delegate.supportedLocales.map((loc) {
-                    return RadioListTile<Locale>(
-                      value: loc,
-                      groupValue: localeProvider.locale,
-                      title: Text(
-                        loc.languageCode == 'de'
-                            ? S.of(context).german
-                            : S.of(context).english,
-                      ),
-                      onChanged: (l) {
-                        Navigator.of(ctx).pop(l);
-                        if (l != null) {
-                          localeProvider.setLocale(l);
-                        }
-                      },
-                    );
-                  }).toList(),
-            ),
-          ),
+      builder: (ctx) => AlertDialog(
+        title: Text(S.of(context).selectLanguage),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: S.delegate.supportedLocales.map((loc) {
+            return RadioListTile<Locale>(
+              value: loc,
+              groupValue: localeProvider.locale,
+              title: Text(
+                loc.languageCode == 'de'
+                    ? S.of(context).german
+                    : S.of(context).english,
+              ),
+              onChanged: (l) {
+                Navigator.of(ctx).pop(l);
+                if (l != null) {
+                  localeProvider.setLocale(l);
+                }
+              },
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 
@@ -103,6 +101,20 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.volume_up),
             title: Text(S.of(context).soundSettingsTitle),
             onTap: () => _navigate(context, '/sound-settings'),
+          ),
+
+          // Neuer Eintrag für das Quiz
+          ListTile(
+            leading: const Icon(Icons.quiz),
+            title: Text(S.of(context).quizTitle),
+            onTap: () => _navigate(context, '/quiz'),
+          ),
+
+          // Debug-Audio Eintrag
+          ListTile(
+            leading: const Icon(Icons.bug_report),
+            title: const Text('Audio Debug'),
+            onTap: () => _navigate(context, '/debug-audio'),
           ),
 
           const Divider(),

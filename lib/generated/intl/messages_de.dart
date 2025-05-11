@@ -32,7 +32,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(message) => "Fehler: ${message}";
 
-  static String m6(idx) => "▶️ Starte Zyklus ${idx}";
+  static String m6(current, total) => "Frage ${current} von ${total}";
+
+  static String m7(idx) => "▶️ Starte Zyklus ${idx}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -69,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "loginTitle": MessageLookupByLibrary.simpleMessage("Login"),
     "memepack": MessageLookupByLibrary.simpleMessage("Memepack"),
     "moroTrainerTitle": MessageLookupByLibrary.simpleMessage("Moro Trainer"),
+    "no": MessageLookupByLibrary.simpleMessage("Nein"),
     "ok": MessageLookupByLibrary.simpleMessage("OK"),
     "overallProgressTitle": MessageLookupByLibrary.simpleMessage(
       "Gesamtfortschritt-Kalender",
@@ -79,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Drücke START für den nächsten Zyklus.",
     ),
     "profileTitle": MessageLookupByLibrary.simpleMessage("Profil"),
+    "quizProgress": m6,
     "quizTitle": MessageLookupByLibrary.simpleMessage("Reflex-Quiz"),
     "registerButton": MessageLookupByLibrary.simpleMessage("Registrieren"),
     "registrationErrorDefault": MessageLookupByLibrary.simpleMessage(
@@ -104,7 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "spinalergalantTrainerTitle": MessageLookupByLibrary.simpleMessage(
       "Spinalergalant Trainer",
     ),
-    "startCycle": m6,
+    "startCycle": m7,
     "unexpectedError": MessageLookupByLibrary.simpleMessage(
       "Ein unerwarteter Fehler ist aufgetreten.",
     ),
@@ -112,5 +116,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "userNotLoggedIn": MessageLookupByLibrary.simpleMessage(
       "Benutzer nicht angemeldet.",
     ),
+    "yes": MessageLookupByLibrary.simpleMessage("Ja"),
   };
 }

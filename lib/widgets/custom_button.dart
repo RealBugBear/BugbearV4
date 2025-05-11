@@ -4,7 +4,11 @@ class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const CustomButton({super.key, required this.text, required this.onPressed});
+  const CustomButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,9 @@ class CustomButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
         textStyle: const TextStyle(fontSize: 16),
       ),
-      child: Text(text), // ❌ Here is the missing `const`
+      // cannot be const because `text` is a runtime variable:
+      // ignore: prefer_const_constructors
+      child: Text(text),
     );
   }
 }
