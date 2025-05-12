@@ -70,9 +70,7 @@ class RootScreen extends StatelessWidget {
     Widget Function(BuildContext, User?)? builder,
   })  : auth = auth ?? FirebaseAuth.instance,
         builder = builder ??
-            ((_, user) => user != null
-                ? ProfileScreen()
-                : LoginScreen()),
+            ((_, user) => user != null ? ProfileScreen() : LoginScreen()),
         super(key: key);
 
   @override

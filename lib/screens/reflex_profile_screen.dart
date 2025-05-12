@@ -1,10 +1,8 @@
-// File: lib/screens/reflex_profile_screen.dart
-
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+
 import 'package:bugbear_app/models/reflex_category.dart';
+import 'package:bugbear_app/services/local_storage_service.dart';
 
 /// Zeigt das gespeicherte Reflex-Profil (Scores) an.
 class ReflexProfileScreen extends StatefulWidget {
@@ -25,14 +23,9 @@ class _ReflexProfileScreenState extends State<ReflexProfileScreen> {
   }
 
   Future<void> _loadSavedResults() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('savedResults');
-    if (jsonString != null) {
-      final List<dynamic> list = jsonDecode(jsonString) as List<dynamic>;
-      _categories = list
-          .map((e) => ReflexCategory.fromJson(e as Map<String, dynamic>))
-          .toList();
-    }
+    final localStorage = context.read<LocalStorageService>();
+    final list = localStorage.loadQuizResults();
+    _categories = list.map((e) => ReflexCategory.fromJson(e)).toList();
     setState(() => _loading = false);
   }
 
@@ -49,9 +42,9 @@ class _ReflexProfileScreenState extends State<ReflexProfileScreen> {
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
+                        const Text(
                           'Reflex-Profil',
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: TextStyle(fontSize: 24),
                         ),
                         const SizedBox(height: 16),
                         ..._categories.map((cat) {
@@ -80,7 +73,7 @@ class _ReflexProfileScreenState extends State<ReflexProfileScreen> {
                               ],
                             ),
                           );
-                        }),
+                        }).toList(),
                       ],
                     ),
             ),

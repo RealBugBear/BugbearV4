@@ -590,6 +590,76 @@ class S {
     );
   }
 
+  /// `Settings`
+  String get settingsTitle {
+    return Intl.message(
+      'Settings',
+      name: 'settingsTitle',
+      desc: 'Title of the settings screen',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to reset all calendar entries?`
+  String get confirmResetAll {
+    return Intl.message(
+      'Are you sure you want to reset all calendar entries?',
+      name: 'confirmResetAll',
+      desc: 'Confirmation for resetting calendar',
+      args: [],
+    );
+  }
+
+  /// `Select training phase`
+  String get selectPhase {
+    return Intl.message(
+      'Select training phase',
+      name: 'selectPhase',
+      desc: 'Tooltip for FAB to select training phase',
+      args: [],
+    );
+  }
+
+  /// `Reset training`
+  String get resetTraining {
+    return Intl.message(
+      'Reset training',
+      name: 'resetTraining',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deletes all training entries, program stays active.`
+  String get resetTrainingSubtitle {
+    return Intl.message(
+      'Deletes all training entries, program stays active.',
+      name: 'resetTrainingSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear local data`
+  String get clearLocalData {
+    return Intl.message(
+      'Clear local data',
+      name: 'clearLocalData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deletes all local data (incl. program).`
+  String get clearLocalDataSubtitle {
+    return Intl.message(
+      'Deletes all local data (incl. program).',
+      name: 'clearLocalDataSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Question {current} of {total}`
   String quizProgress(Object current, Object total) {
     return Intl.message(

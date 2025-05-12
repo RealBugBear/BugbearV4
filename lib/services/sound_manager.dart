@@ -29,9 +29,9 @@ class SoundManager {
       name: 'default',
       assets: {
         SoundType.start: 'sounds/start.mp3',
-        SoundType.tick:  'sounds/clocktick.mp3',
+        SoundType.tick: 'sounds/clocktick.mp3',
         SoundType.pause: 'sounds/pause.mp3',
-        SoundType.end:   'sounds/ende.mp3',
+        SoundType.end: 'sounds/ende.mp3',
       },
     );
   }

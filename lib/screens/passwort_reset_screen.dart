@@ -75,11 +75,11 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
-                  onPressed: _resetPassword,
-                  child: Text(
-                    S.of(context).resetButton,
-                  ), // ✅ Correct existing button label
-                ),
+                    onPressed: _resetPassword,
+                    child: Text(
+                      S.of(context).resetButton,
+                    ), // ✅ Correct existing button label
+                  ),
             if (_message != null) ...[
               const SizedBox(height: 20),
               Text(

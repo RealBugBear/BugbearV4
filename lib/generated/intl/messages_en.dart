@@ -43,6 +43,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "appTitle": MessageLookupByLibrary.simpleMessage("Bugbear App"),
     "classicpack": MessageLookupByLibrary.simpleMessage("Classicpack"),
+    "clearLocalData": MessageLookupByLibrary.simpleMessage("Clear local data"),
+    "clearLocalDataSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Deletes all local data (incl. program).",
+    ),
+    "confirmResetAll": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to reset all calendar entries?",
+    ),
     "cycleComplete": m0,
     "dayDi": MessageLookupByLibrary.simpleMessage("Tu"),
     "dayDo": MessageLookupByLibrary.simpleMessage("Th"),
@@ -97,11 +104,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "resetPasswordTitle": MessageLookupByLibrary.simpleMessage(
       "Password Reset",
     ),
+    "resetTraining": MessageLookupByLibrary.simpleMessage("Reset training"),
+    "resetTrainingSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Deletes all training entries, program stays active.",
+    ),
     "resultHeader": MessageLookupByLibrary.simpleMessage("Your Reflex Profile"),
     "screenshotHint": MessageLookupByLibrary.simpleMessage(
       "Take a screenshot to save your results.",
     ),
     "selectLanguage": MessageLookupByLibrary.simpleMessage("Select Language"),
+    "selectPhase": MessageLookupByLibrary.simpleMessage(
+      "Select training phase",
+    ),
+    "settingsTitle": MessageLookupByLibrary.simpleMessage("Settings"),
     "soundSettingsTitle": MessageLookupByLibrary.simpleMessage("Sound Packs"),
     "spinalergalantTrainerTitle": MessageLookupByLibrary.simpleMessage(
       "Spinalergalant Trainer",

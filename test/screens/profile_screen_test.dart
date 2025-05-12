@@ -10,10 +10,12 @@ import 'package:bugbear_app/generated/l10n.dart';
 import 'package:bugbear_app/screens/profile_screen.dart';
 import 'package:bugbear_app/services/training_service.dart';
 import 'package:bugbear_app/models/training_session.dart';
+import 'package:bugbear_app/models/user_program.dart';
+import 'package:bugbear_app/models/training_data.dart';
 import 'package:intl/intl.dart';
 
-/// Fake service still returns no sessions, but calendar will render empty cells.
-class FakeTrainingService implements TrainingService {
+/// FakeService erbt von TrainingService und stubbt nur die benötigten Methoden.
+class FakeTrainingService extends TrainingService {
   @override
   Stream<List<TrainingSession>> getAllTrainingSessions({
     required String userId,
@@ -22,18 +24,42 @@ class FakeTrainingService implements TrainingService {
 
   @override
   Stream<List<TrainingSession>> getTrainingSessions({
-    required String trainingType,
     required String userId,
+    required String trainingType,
   }) =>
       Stream.value(<TrainingSession>[]);
 
   @override
   Future<void> logTrainingSession({
-    required String trainingType,
     required String userId,
+    required String trainingType,
   }) async {
     // no-op
   }
+
+  @override
+  Future<void> setActiveProgram(
+    String uid,
+    String programId,
+    DateTime startDate,
+  ) async {
+    // no-op
+  }
+
+  @override
+  Stream<UserProgram> watchUserProgram(String uid) => Stream.value(
+        UserProgram(
+          activeProgramId: allPrograms.first.id,
+          programStartDate: DateTime.now(),
+          skippedWeekdays: 0,
+        ),
+      );
+
+  @override
+  String currentUid() => 'test-uid';
+
+  @override
+  TrainingProgram getProgramById(String id) => allPrograms.first;
 }
 
 void main() {
@@ -87,8 +113,7 @@ void main() {
     testWidgets(
       'renders calendar when user is logged in',
       (WidgetTester tester) async {
-        // Arrange: mock a signed-in user
-        final user = MockUser(uid: 'abc123', displayName: 'Tester');
+        final user = MockUser(uid: 'abc123');
         mockAuth = MockFirebaseAuth(signedIn: true, mockUser: user);
 
         await tester.pumpWidget(
@@ -109,10 +134,10 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        // Assert: at least one Table (the calendar) is present
+        // Mindestens eine Table (Kalender)
         expect(find.byType(Table), findsWidgets);
 
-        // And the current month’s name appears
+        // Monatsname wird angezeigt
         final currentMonth = DateFormat.MMMM('en').format(DateTime.now());
         expect(find.text(currentMonth), findsWidgets);
       },

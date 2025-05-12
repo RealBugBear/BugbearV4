@@ -1,12 +1,10 @@
-// File: lib/screens/quiz_screen.dart
-
-import 'dart:convert';
+// lib/screens/quiz_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bugbear_app/models/quiz_model.dart';
+import 'package:bugbear_app/services/local_storage_service.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -39,15 +37,14 @@ class _QuizScreenState extends State<QuizScreen> {
       return;
     }
 
-    // Finale Auswertung berechnen
     quizModel.calculateScores();
 
-    // Dialog: Speichern?
+    // Dialog: direkt mit String, kein S.quizSavePrompt
     final save = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(S.of(context).quizTitle),
-        content: Text('Möchten Sie das Ergebnis speichern?'),
+        content: const Text('Möchten Sie das Ergebnis speichern?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -62,21 +59,17 @@ class _QuizScreenState extends State<QuizScreen> {
     );
 
     if (save == true) {
-      // in SharedPreferences serialisieren
-      final prefs = await SharedPreferences.getInstance();
+      final localStorage = context.read<LocalStorageService>();
       final jsonList = quizModel.categories
           .map((c) => {'id': c.id, 'name': c.name, 'score': c.score})
           .toList();
-      await prefs.setString('savedResults', jsonEncode(jsonList));
+      await localStorage.saveQuizResults(jsonList);
     }
 
-    // je nach Antwort weiterleiten
     if (!mounted) return;
-    if (save == true) {
-      Navigator.of(context).pushReplacementNamed('/reflex_profile');
-    } else {
-      Navigator.of(context).pushReplacementNamed('/results');
-    }
+    Navigator.of(context).pushReplacementNamed(
+      save == true ? '/reflex_profile' : '/results',
+    );
   }
 
   @override
@@ -106,19 +99,18 @@ class _QuizScreenState extends State<QuizScreen> {
             LinearProgressIndicator(
               value: (quizModel.currentIndex + 1) / quizModel.questions.length,
               minHeight: 8,
-              backgroundColor: Theme.of(context)
-                  .colorScheme
-                  .surface
-                  .withValues(alpha: 0.3), // .withOpacity ersetzt
-              valueColor:
-                  AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
+              backgroundColor:
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
             ),
             const SizedBox(height: 12),
             Text(
               S.of(context).quizProgress(
-                quizModel.currentIndex + 1,
-                quizModel.questions.length,
-              ),
+                    quizModel.currentIndex + 1,
+                    quizModel.questions.length,
+                  ),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 24),
@@ -136,7 +128,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   child: Text(S.of(context).yes),
                 ),
@@ -146,7 +137,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   child: Text(S.of(context).no),
                 ),

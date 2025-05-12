@@ -237,6 +237,21 @@
   "@classicpack": {
     "description": "Option: classic sound pack"
   },
+ "settingsTitle": "Settings",
+"@settingsTitle": { "description": "Title of the settings screen" },
+"confirmResetAll": "Are you sure you want to reset your calendar?",
+"@confirmResetAll": { "description": "Confirmation for resetting calendar" },
+"selectPhase": "Select training phase",
+"@selectPhase": {"description":"Tooltip for FAB to select training phase"
+
+  },
+  "settingsTitle": "Settings",
+"resetTraining": "Reset training",
+"resetTrainingSubtitle": "Deletes all training entries, program stays active.",
+"clearLocalData": "Clear local data",
+"clearLocalDataSubtitle": "Deletes all local data (incl. program).",
+"confirmResetAll": "Are you sure you want to reset all calendar entries?"
+,
   "quizProgress": "Question {current} of {total}",
    "@quizProgress": {
      "description": "Shows the current quiz progress",

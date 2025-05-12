@@ -1,24 +1,27 @@
-import 'package:flutter/material.dart';
+// test/widget_basic_test.dart
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bugbear_app/main.dart';  // Import mit RootScreen
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:bugbear_app/services/local_storage_service.dart';
+import 'package:bugbear_app/main.dart';
 
 void main() {
-  testWidgets(
-    'RootScreen fallback builder is used',
-    (tester) async {
-      // Wir injizieren einen Builder, der einfach ein grünes Scaffold rendert,
-      // um zu prüfen, dass es korrekt angezeigt wird.
-      await tester.pumpWidget(
-        RootScreen(
-          builder: (_, __) => const Scaffold(backgroundColor: Colors.green),
-        ),
-      );
+  testWidgets('App starts without errors', (tester) async {
+    final localStorage = LocalStorageService();
+    await localStorage.init();
 
-      // Verifizieren, dass unser Scaffold auftaucht und die richtige Farbe hat.
-      expect(find.byType(Scaffold), findsOneWidget);
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.backgroundColor, Colors.green);
-    },
-    skip: true, // ← Test vorübergehend überspringen
-  );
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider<LocalStorageService>.value(value: localStorage),
+          // ... evtl. weitere Provider
+        ],
+        child: const MyApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MaterialApp), findsOneWidget);
+  });
 }

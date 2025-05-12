@@ -14,7 +14,7 @@ git commit -m "Initial commit"
 git push -u origin main
 
 echo "Feature-Branch erstellen"
-git checkout -b feature/questioneer
+git checkout -b feature/Tracking2
 
 echo "Änderungen committen"
 git add .

@@ -5,7 +5,7 @@ part 'question.g.dart';
 @JsonSerializable()
 class Question {
   final int id;
-  final Map<String, String> text;    // keys: 'de' und 'en'
+  final Map<String, String> text; // keys: 'de' und 'en'
   final List<String> reflexIds;
 
   Question({

@@ -59,7 +59,8 @@ class QuizModel extends ChangeNotifier {
   /// Wandelt die rohen Punktzahlen in Prozent um.
   void _calculateScores() {
     for (var cat in categories) {
-      final total = questions.where((q) => q.categoryIds.contains(cat.id)).length;
+      final total =
+          questions.where((q) => q.categoryIds.contains(cat.id)).length;
       cat.score = total == 0 ? 0 : (cat.score / total) * 100;
     }
     notifyListeners();

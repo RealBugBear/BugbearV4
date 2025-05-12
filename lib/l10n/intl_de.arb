@@ -237,6 +237,22 @@
   "@classicpack": {
     "description": "Option: Classic-Soundpaket"
   },
+  "settingsTitle": "Einstellungen",
+"@settingsTitle": { "description": "Titel des Einstellungsbildschirms" },
+"confirmResetAll": "Möchtest Du wirklich alle Kalendereinträge zurücksetzen?",
+"@confirmResetAll": { "description": "Bestätigung zum Zurücksetzen des Kalenders" },
+"selectPhase": "Trainingsphase wählen",
+"@selectPhase": {"description":"Tooltip für Button zum Auswählen der Trainingsphase"
+
+  },
+  "settingsTitle": "Einstellungen",
+"resetTraining": "Training zurücksetzen",
+"resetTrainingSubtitle": "Löscht alle Trainingseinträge, Programm bleibt aktiv.",
+"clearLocalData": "Lokale Daten löschen",
+"clearLocalDataSubtitle": "Löscht alle lokalen Daten (inkl. Programm).",
+"confirmResetAll": "Möchtest Du wirklich alle Kalendereinträge zurücksetzen?"
+
+  ,
   "quizProgress": "Frage {current} von {total}",
  "@quizProgress": {
    "description": "Zeigt den aktuellen Quiz-Fortschritt",

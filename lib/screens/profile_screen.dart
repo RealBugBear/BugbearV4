@@ -1,116 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:bugbear_app/services/training_service.dart';
-import 'package:bugbear_app/models/training_session.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bugbear_app/models/calendar_model.dart';
+import 'package:bugbear_app/services/training_service.dart';
+import 'package:bugbear_app/services/local_storage_service.dart';
+import 'package:bugbear_app/models/training_data.dart';
+import 'package:bugbear_app/themes/app_theme.dart';
+import 'package:bugbear_app/widgets/confirm_dialog.dart';
 import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
 class ProfileScreen extends StatelessWidget {
-  // Injected dependencies
   final TrainingService trainingService;
+  final LocalStorageService localStorage;
   final FirebaseAuth auth;
 
-  /// Accepts optional named parameters for easier testing
   ProfileScreen({
     Key? key,
     TrainingService? trainingService,
+    LocalStorageService? localStorage,
     FirebaseAuth? auth,
   })  : trainingService = trainingService ?? TrainingService(),
+        localStorage = localStorage ?? LocalStorageService(),
         auth = auth ?? FirebaseAuth.instance,
         super(key: key);
 
-  /// Derive currentUser from injected auth
   User? get currentUser => auth.currentUser;
-
-  Widget buildMonthCalendar(
-    BuildContext context,
-    int year,
-    int month,
-    Set<String> trainingDays,
-  ) {
-    final DateTime firstDay = DateTime(year, month, 1);
-    final int daysInMonth = DateTime(year, month + 1, 0).day;
-    final int startWeekday = firstDay.weekday;
-    final int totalCells = startWeekday - 1 + daysInMonth;
-    final int rows = (totalCells / 7).ceil();
-
-    final List<TableRow> tableRows = [];
-    final List<String> dayNames = [
-      S.of(context).dayMo,
-      S.of(context).dayDi,
-      S.of(context).dayMi,
-      S.of(context).dayDo,
-      S.of(context).dayFr,
-      S.of(context).daySa,
-      S.of(context).daySo,
-    ];
-
-    tableRows.add(
-      TableRow(
-        children: dayNames
-            .map(
-              (name) => Center(
-                child: Text(name, style: const TextStyle(fontSize: 10)),
-              ),
-            )
-            .toList(),
-      ),
-    );
-
-    int cellIndex = 0;
-    for (int row = 0; row < rows; row++) {
-      final List<Widget> cells = [];
-      for (int col = 0; col < 7; col++) {
-        cellIndex++;
-        final int dayNum = cellIndex - (startWeekday - 1);
-        if (dayNum < 1 || dayNum > daysInMonth) {
-          cells.add(const SizedBox(height: 20, width: 20));
-        } else {
-          final DateTime currentDay = DateTime(year, month, dayNum);
-          final String dateString = DateFormat('yyyy-MM-dd').format(currentDay);
-          final bool completed = trainingDays.contains(dateString);
-          cells.add(
-            Container(
-              height: 20,
-              width: 20,
-              margin: const EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                color: completed ? Colors.green : Colors.grey.shade300,
-                border: Border.all(color: Colors.black12),
-              ),
-              child: Center(
-                child: Text(
-                  '$dayNum',
-                  style: TextStyle(
-                    fontSize: 8,
-                    color: completed ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-      }
-      tableRows.add(TableRow(children: cells));
-    }
-
-    return Column(
-      children: [
-        Text(
-          DateFormat.MMMM(
-            Localizations.localeOf(context).languageCode,
-          ).format(firstDay),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        ),
-        const SizedBox(height: 4),
-        Table(
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: tableRows,
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,63 +39,83 @@ class ProfileScreen extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).overallProgressTitle)),
-      drawer: const AppDrawer(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(8.0),
-        child: StreamBuilder<List<TrainingSession>>(
-          stream: trainingService.getAllTrainingSessions(
-            userId: currentUser!.uid,
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  S.of(context).errorLoading(snapshot.error.toString()),
-                ),
-              );
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final Set<String> trainingDays = snapshot.data!
-                .map((session) => DateFormat('yyyy-MM-dd').format(session.sessionDate))
-                .toSet();
-
-            final int currentYear = DateTime.now().year;
-            final List<Widget> monthWidgets = [];
-
-            for (int month = 1; month <= 12; month++) {
-              monthWidgets.add(
-                Container(
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black26),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: buildMonthCalendar(
-                    context,
-                    currentYear,
-                    month,
-                    trainingDays,
-                  ),
-                ),
-              );
-            }
-
-            return Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              alignment: WrapAlignment.center,
-              children: monthWidgets,
-            );
-          },
-        ),
+    return ChangeNotifierProvider(
+      create: (_) => CalendarModel(
+        trainingService: trainingService,
+        localStorage: localStorage,
       ),
+      child: const _ProfileView(),
     );
   }
 }
 
+class _ProfileView extends StatelessWidget {
+  const _ProfileView({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final model = context.watch<CalendarModel>();
+
+    return Scaffold(
+      appBar: AppBar(title: Text(S.of(context).overallProgressTitle)),
+      drawer: const AppDrawer(),
+      body: TableCalendar(
+        firstDay: DateTime.utc(2000),
+        lastDay: DateTime.utc(2100),
+        focusedDay: model.visibleMonth,
+        calendarFormat: CalendarFormat.month,
+        headerStyle: const HeaderStyle(formatButtonVisible: false, titleCentered: true),
+        calendarStyle: CalendarStyle(
+          markerDecoration: BoxDecoration(
+            color: programColors[allPrograms.indexWhere((p) => p.id == model.activeProgramId)],
+            shape: BoxShape.circle,
+          ),
+          todayDecoration: BoxDecoration(
+            border: Border.all(color: AppColors.gold, width: 2),
+            shape: BoxShape.circle,
+          ),
+        ),
+        selectedDayPredicate: (d) => model.completedDates.contains(DateTime(d.year, d.month, d.day)),
+        onDaySelected: (sel, foc) async {
+          final txt = DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(sel);
+          final ok = await showDialog<bool>(
+            context: context,
+            builder: (_) => ConfirmDialog(
+              title: 'Eintragen?',
+              message: 'Möchtest Du das Tracking für $txt speichern?',
+              confirmLabel: S.of(context).yes,
+              cancelLabel: S.of(context).no,
+            ),
+          );
+          if (ok == true) await model.toggleCompleted(sel);
+        },
+        onPageChanged: (np) => model.setVisibleMonth = np,
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: S.of(context).selectPhase,
+        child: const Icon(Icons.edit),
+        onPressed: () => _showPhaseSelection(context),
+      ),
+    );
+  }
+
+  void _showPhaseSelection(BuildContext context) {
+    final model = context.read<CalendarModel>();
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => ListView(
+        children: allPrograms.map((prog) {
+          final idx = allPrograms.indexOf(prog);
+          final pct = (model.completedDates.length / prog.plannedSessions).clamp(0.0,1.0);
+          return ListTile(
+            leading: CircleAvatar(backgroundColor: programColors[idx], child: Text('${(pct*100).toInt()}%')),
+            title: Text(prog.name),
+            onTap: () async {
+              await model.setActiveProgram(prog.id);
+              Navigator.pop(context);
+            },
+          );
+        }).toList(),
+      ),
+    );
+  }
+}

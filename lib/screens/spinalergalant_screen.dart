@@ -189,8 +189,7 @@ class _SpinalergalantScreenState extends State<SpinalergalantScreen> {
                 progress: progress.clamp(0, 1),
                 size: 120,
                 backgroundColor: Colors.grey.shade300,
-                progressColor:
-                    isExercise ? Colors.green : Colors.orangeAccent,
+                progressColor: isExercise ? Colors.green : Colors.orangeAccent,
               ),
               const SizedBox(height: 20),
               CycleInfoCard(

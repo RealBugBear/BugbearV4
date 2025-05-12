@@ -40,8 +40,10 @@ void main() {
       expect(find.byType(TextField), findsNWidgets(2));
 
       // Buttons labelled by your localized strings
-      expect(find.widgetWithText(CustomButton, S.current.loginButton), findsOneWidget);
-      expect(find.widgetWithText(CustomButton, S.current.registerButton), findsOneWidget);
+      expect(find.widgetWithText(CustomButton, S.current.loginButton),
+          findsOneWidget,);
+      expect(find.widgetWithText(CustomButton, S.current.registerButton),
+          findsOneWidget,);
     });
   });
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:bugbear_app/generated/l10n.dart';
 import 'package:bugbear_app/firebase_options.dart';
@@ -12,6 +11,8 @@ import 'package:bugbear_app/providers/locale_provider.dart';
 import 'package:bugbear_app/models/quiz_model.dart';
 import 'package:bugbear_app/services/sound_manager.dart';
 import 'package:bugbear_app/services/sound_packs.dart';
+import 'package:bugbear_app/services/local_storage_service.dart';
+import 'package:bugbear_app/services/notification_manager.dart';
 
 import 'package:bugbear_app/screens/login_screen.dart';
 import 'package:bugbear_app/screens/profile_screen.dart';
@@ -22,25 +23,31 @@ import 'package:bugbear_app/screens/moro_trainer_screen.dart' as moro;
 import 'package:bugbear_app/screens/debug_audio_screen.dart';
 import 'package:bugbear_app/screens/quiz_screen.dart';
 import 'package:bugbear_app/screens/results_screen.dart';
-import 'package:bugbear_app/screens/reflex_profile_screen.dart';  // neu
-
-final FlutterLocalNotificationsPlugin notificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+import 'package:bugbear_app/screens/reflex_profile_screen.dart';
+import 'package:bugbear_app/screens/settings_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 1) SoundManager initialisieren
   await SoundManager().init(pack: classicpack);
+
+  // 2) Firebase initialisieren
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-  const initSettings = InitializationSettings(android: androidInit);
-  await notificationsPlugin.initialize(initSettings);
+  // 3) Hive & LocalStorage initialisieren
+  final localStorage = LocalStorageService();
+  await localStorage.init();
+
+  // 4) Notifications initialisieren
+  await NotificationManager().init();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => QuizModel()),
+        Provider<LocalStorageService>.value(value: localStorage),
       ],
       child: const MyApp(),
     ),
@@ -49,11 +56,9 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final locale = context.watch<LocaleProvider>().locale;
-
     return MaterialApp(
       onGenerateTitle: (ctx) => S.of(ctx).appTitle,
       debugShowCheckedModeBanner: false,
@@ -66,47 +71,37 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      initialRoute: '/',
+      home: const RootScreen(),
       routes: {
-        '/': (_) => RootScreen(),
-        '/login': (_) => LoginScreen(),
-        '/profile': (_) => ProfileScreen(),
+        '/login': (_) => const LoginScreen(),
+        '/profile': (_) => const ProfileScreen(),
         '/spinalergalant': (_) => spinal.SpinalergalantScreen(),
         '/moro': (_) => moro.MoroTrainerScreen(),
-        '/reset-password': (_) => PasswordResetScreen(),
-        '/sound-settings': (_) => SoundSettingsScreen(),
+        '/reset-password': (_) => const PasswordResetScreen(),
+        '/sound-settings': (_) => const SoundSettingsScreen(),
         '/quiz': (_) => const QuizScreen(),
         '/results': (_) => const ResultsScreen(),
-        '/reflex_profile': (_) => const ReflexProfileScreen(),  // neu
-        '/debug-audio': (_) => DebugAudioScreen(),
+        '/reflex_profile': (_) => const ReflexProfileScreen(),
+        '/debug-audio': (_) => const DebugAudioScreen(),
+        '/settings': (_) => const SettingsScreen(),
       },
     );
   }
 }
 
 class RootScreen extends StatelessWidget {
-  final FirebaseAuth auth;
-  final Widget Function(BuildContext, User?) builder;
-
-  RootScreen({
-    Key? key,
-    FirebaseAuth? auth,
-    Widget Function(BuildContext, User?)? builder,
-  })  : auth = auth ?? FirebaseAuth.instance,
-        builder = builder ?? ((_, user) => user != null ? ProfileScreen() : LoginScreen()),
-        super(key: key);
-
+  const RootScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: auth.authStateChanges(),
+      stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, snap) {
         if (snap.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        return builder(ctx, snap.data);
+        return snap.data != null ? const ProfileScreen() : const LoginScreen();
       },
     );
   }

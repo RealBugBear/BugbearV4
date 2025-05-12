@@ -102,21 +102,18 @@ class AppDrawer extends StatelessWidget {
             onTap: () => _navigate(context, '/sound-settings'),
           ),
 
-          // Quiz-Eintrag
           ListTile(
             leading: const Icon(Icons.quiz),
             title: Text(S.of(context).quizTitle),
             onTap: () => _navigate(context, '/quiz'),
           ),
 
-          // Reflex-Profil (gespeicherte Ergebnisse)
           ListTile(
             leading: const Icon(Icons.assessment),
             title: const Text('Reflex-Profil'),
             onTap: () => _navigate(context, '/reflex_profile'),
           ),
 
-          // Debug-Audio Eintrag
           ListTile(
             leading: const Icon(Icons.bug_report),
             title: const Text('Audio Debug'),
@@ -129,6 +126,12 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.language),
             title: Text(S.of(context).languageSettings),
             onTap: () => _showLanguagePicker(context, localeProvider),
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Einstellungen'),
+            onTap: () => _navigate(context, '/settings'),
           ),
 
           const Divider(),
