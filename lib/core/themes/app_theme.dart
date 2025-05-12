@@ -1,8 +1,7 @@
-// lib/themes/app_theme.dart
+// lib/core/themes/app_theme.dart
 
 import 'package:flutter/material.dart';
-
-import 'package:bugbear_app/themes/typography.dart';
+import 'package:bugbear_app/core/themes/typography.dart';
 
 /// Globale App-Farben
 class AppColors {
@@ -14,24 +13,25 @@ class AppColors {
 }
 
 /// Farben für die einzelnen Trainingsphasen (11 Einträge)
-const List<Color> programColors = [
-  Colors.green, // phase1
-  Colors.blue, // phase2
-  Colors.red, // phase3
-  Colors.orange, // phase4
-  Colors.purple, // phase5
-  Colors.teal, // phase6
-  Colors.indigo, // phase7
-  Colors.yellow, // phase8
-  Colors.cyan, // phase9
-  Colors.pink, // phase10
-  Colors.lime, // phase11 (optional)
+const List<Color> programColors = <Color>[
+  Colors.green,   // phase1
+  Colors.blue,    // phase2
+  Colors.red,     // phase3
+  Colors.orange,  // phase4
+  Colors.purple,  // phase5
+  Colors.teal,    // phase6
+  Colors.indigo,  // phase7
+  Colors.yellow,  // phase8
+  Colors.cyan,    // phase9
+  Colors.pink,    // phase10
+  Colors.lime,    // phase11 (optional)
 ];
 
 class AppTheme {
   static final ThemeData light = ThemeData(
     scaffoldBackgroundColor: AppColors.background,
-    colorScheme: ColorScheme.light(
+    // Jetzt mit const, um den Lint zu beseitigen
+    colorScheme: const ColorScheme.light(
       primary: AppColors.calmMint,
       secondary: AppColors.gentleAccent,
       surface: AppColors.background,
@@ -41,9 +41,9 @@ class AppTheme {
       backgroundColor: AppColors.calmMint,
       foregroundColor: AppColors.textPrimary,
     ),
-    buttonTheme: ButtonThemeData(
+    buttonTheme: const ButtonThemeData(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       buttonColor: AppColors.gentleAccent,
     ),

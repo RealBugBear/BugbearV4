@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bugbear_app/widgets/custom_text_field.dart';
-import 'package:bugbear_app/widgets/custom_button.dart';
+import 'package:bugbear_app/core/widgets/custom_button.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
 class LoginScreen extends StatefulWidget {

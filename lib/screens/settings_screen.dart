@@ -1,3 +1,5 @@
+// lib/screens/settings_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bugbear_app/generated/l10n.dart';
@@ -9,21 +11,23 @@ class SettingsScreen extends StatelessWidget {
   final LocalStorageService localStorage;
   final FirebaseAuth auth;
 
-  const SettingsScreen({
+  SettingsScreen({
     Key? key,
     TrainingService? trainingService,
     LocalStorageService? localStorage,
     FirebaseAuth? auth,
-  })  : trainingService = trainingService ?? const TrainingService(),
-        localStorage = localStorage ?? const LocalStorageService(),
+  })  : trainingService = trainingService ?? TrainingService(),
+        localStorage = localStorage ?? LocalStorageService(),
         auth = auth ?? FirebaseAuth.instance,
         super(key: key);
 
   Future<void> _resetTraining(BuildContext ctx) async {
-    final u = auth.currentUser;
-    if (u != null) {
-      await trainingService.deleteAllSessions(u.uid);
+    final user = auth.currentUser;
+    if (user != null) {
+      await trainingService.deleteAllSessions(user.uid);
+      if (!ctx.mounted) return;
       await localStorage.clearCompletedDates();
+      if (!ctx.mounted) return;
       ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(content: Text(S.of(ctx).confirmResetAll)),
       );
@@ -32,6 +36,7 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _clearLocal(BuildContext ctx) async {
     await localStorage.clearAll();
+    if (!ctx.mounted) return;
     ScaffoldMessenger.of(ctx).showSnackBar(
       SnackBar(content: Text(S.of(ctx).clearLocalData)),
     );

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:bugbear_app/generated/l10n.dart';
-import 'package:bugbear_app/widgets/custom_button.dart';
+import 'package:bugbear_app/core/widgets/custom_button.dart';
 import 'package:bugbear_app/screens/login_screen.dart';
 
 void main() {

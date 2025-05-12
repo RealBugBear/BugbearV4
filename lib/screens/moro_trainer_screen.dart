@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/widgets/cycle_info_card.dart';
-import 'package:bugbear_app/widgets/timer_ring.dart' as timer_ring;
+import 'package:bugbear_app/core/widgets/timer_ring.dart' as timer_ring;
 import 'package:bugbear_app/services/training_service.dart';
 import 'package:bugbear_app/services/sound_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';

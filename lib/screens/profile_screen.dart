@@ -3,27 +3,30 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:bugbear_app/models/calendar_model.dart';
+import 'package:bugbear_app/models/training_data.dart';
 import 'package:bugbear_app/services/training_service.dart';
 import 'package:bugbear_app/services/local_storage_service.dart';
-import 'package:bugbear_app/models/training_data.dart';
-import 'package:bugbear_app/themes/app_theme.dart';
-import 'package:bugbear_app/widgets/confirm_dialog.dart';
+import 'package:bugbear_app/core/themes/app_theme.dart';
+import 'package:bugbear_app/core/widgets/confirm_dialog.dart';
 import 'package:bugbear_app/widgets/app_drawer.dart';
 import 'package:bugbear_app/generated/l10n.dart';
 
+/// Displays the user's calendar of completed sessions.
+/// 
+/// Uses a [LocalStorageService] from the widget tree unless overridden for testing.
 class ProfileScreen extends StatelessWidget {
   final TrainingService trainingService;
-  final LocalStorageService localStorage;
+  final LocalStorageService? localStorage;
   final FirebaseAuth auth;
 
   ProfileScreen({
     Key? key,
     TrainingService? trainingService,
-    LocalStorageService? localStorage,
+    this.localStorage,
     FirebaseAuth? auth,
   })  : trainingService = trainingService ?? TrainingService(),
-        localStorage = localStorage ?? LocalStorageService(),
         auth = auth ?? FirebaseAuth.instance,
         super(key: key);
 
@@ -31,6 +34,10 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Choose the initialized storage, falling back to Provider if not provided.
+    final storage =
+        localStorage ?? Provider.of<LocalStorageService>(context, listen: false);
+
     if (currentUser == null) {
       return Scaffold(
         appBar: AppBar(title: Text(S.of(context).profileTitle)),
@@ -42,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => CalendarModel(
         trainingService: trainingService,
-        localStorage: localStorage,
+        localStorage: storage,
       ),
       child: const _ProfileView(),
     );
@@ -51,9 +58,17 @@ class ProfileScreen extends StatelessWidget {
 
 class _ProfileView extends StatelessWidget {
   const _ProfileView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final model = context.watch<CalendarModel>();
+
+    // Find index of active program; default to 0 if not found to avoid RangeError.
+    int programIndex =
+        allPrograms.indexWhere((p) => p.id == model.activeProgramId);
+    if (programIndex < 0 || programIndex >= programColors.length) {
+      programIndex = 0;
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).overallProgressTitle)),
@@ -63,10 +78,13 @@ class _ProfileView extends StatelessWidget {
         lastDay: DateTime.utc(2100),
         focusedDay: model.visibleMonth,
         calendarFormat: CalendarFormat.month,
-        headerStyle: const HeaderStyle(formatButtonVisible: false, titleCentered: true),
+        headerStyle: const HeaderStyle(
+          formatButtonVisible: false,
+          titleCentered: true,
+        ),
         calendarStyle: CalendarStyle(
           markerDecoration: BoxDecoration(
-            color: programColors[allPrograms.indexWhere((p) => p.id == model.activeProgramId)],
+            color: programColors[programIndex],
             shape: BoxShape.circle,
           ),
           todayDecoration: BoxDecoration(
@@ -74,21 +92,27 @@ class _ProfileView extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
-        selectedDayPredicate: (d) => model.completedDates.contains(DateTime(d.year, d.month, d.day)),
-        onDaySelected: (sel, foc) async {
-          final txt = DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(sel);
-          final ok = await showDialog<bool>(
+        selectedDayPredicate: (date) => model.completedDates
+            .contains(DateTime(date.year, date.month, date.day)),
+        onDaySelected: (selectedDay, focusedDay) async {
+          final formatted = DateFormat.yMMMd(
+            Localizations.localeOf(context).toString(),
+          ).format(selectedDay);
+          final confirmed = await showDialog<bool>(
             context: context,
             builder: (_) => ConfirmDialog(
               title: 'Eintragen?',
-              message: 'Möchtest Du das Tracking für $txt speichern?',
+              message:
+                  'Möchtest Du das Tracking für $formatted speichern?',
               confirmLabel: S.of(context).yes,
               cancelLabel: S.of(context).no,
             ),
           );
-          if (ok == true) await model.toggleCompleted(sel);
+          if (confirmed == true) {
+            await model.toggleCompleted(selectedDay);
+          }
         },
-        onPageChanged: (np) => model.setVisibleMonth = np,
+        onPageChanged: (focused) => model.setVisibleMonth = focused,
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: S.of(context).selectPhase,
@@ -105,9 +129,14 @@ class _ProfileView extends StatelessWidget {
       builder: (_) => ListView(
         children: allPrograms.map((prog) {
           final idx = allPrograms.indexOf(prog);
-          final pct = (model.completedDates.length / prog.plannedSessions).clamp(0.0,1.0);
+          final progress =
+              (model.completedDates.length / prog.plannedSessions)
+                  .clamp(0.0, 1.0);
           return ListTile(
-            leading: CircleAvatar(backgroundColor: programColors[idx], child: Text('${(pct*100).toInt()}%')),
+            leading: CircleAvatar(
+              backgroundColor: programColors[idx],
+              child: Text('${(progress * 100).toInt()}%'),
+            ),
             title: Text(prog.name),
             onTap: () async {
               await model.setActiveProgram(prog.id);

@@ -6,8 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:bugbear_app/generated/l10n.dart';
-import 'package:bugbear_app/providers/locale_provider.dart';
-import 'package:bugbear_app/themes/app_theme.dart';
+import 'package:bugbear_app/core/providers/locale_provider.dart';
+import 'package:bugbear_app/core/themes/app_theme.dart';
 
 import 'package:bugbear_app/screens/login_screen.dart';
 import 'package:bugbear_app/screens/profile_screen.dart';
@@ -44,16 +44,16 @@ class AppMaterial extends StatelessWidget {
       ],
       initialRoute: '/',
       routes: {
-        '/': (ctx) => RootScreen(),
-        '/login': (ctx) => LoginScreen(),
-        '/profile': (ctx) => ProfileScreen(),
-        '/spinalergalant': (ctx) => spinal.SpinalergalantScreen(),
-        '/moro': (ctx) => moro.MoroTrainerScreen(),
-        '/reset-password': (ctx) => PasswordResetScreen(),
-        '/sound-settings': (ctx) => SoundSettingsScreen(),
-        '/quiz': (ctx) => QuizScreen(),
-        '/results': (ctx) => ResultsScreen(),
-        '/debug-audio': (ctx) => DebugAudioScreen(),
+        '/': (ctx) => const RootScreen(),
+        '/login': (ctx) => const LoginScreen(),
+        '/profile': (ctx) => const ProfileScreen(),
+        '/spinalergalant': (ctx) => const spinal.SpinalergalantScreen(),
+        '/moro': (ctx) => const moro.MoroTrainerScreen(),
+        '/reset-password': (ctx) => const PasswordResetScreen(),
+        '/sound-settings': (ctx) => const SoundSettingsScreen(),
+        '/quiz': (ctx) => const QuizScreen(),
+        '/results': (ctx) => const ResultsScreen(),
+        '/debug-audio': (ctx) => const DebugAudioScreen(),
       },
     );
   }
@@ -64,13 +64,13 @@ class RootScreen extends StatelessWidget {
   final FirebaseAuth auth;
   final Widget Function(BuildContext, User?) builder;
 
-  RootScreen({
+  const RootScreen({
     Key? key,
     FirebaseAuth? auth,
     Widget Function(BuildContext, User?)? builder,
   })  : auth = auth ?? FirebaseAuth.instance,
         builder = builder ??
-            ((_, user) => user != null ? ProfileScreen() : LoginScreen()),
+            ((_, user) => user != null ? const ProfileScreen() : const LoginScreen()),
         super(key: key);
 
   @override

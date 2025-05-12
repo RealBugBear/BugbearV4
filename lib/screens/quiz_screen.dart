@@ -1,4 +1,5 @@
 // lib/screens/quiz_screen.dart
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,20 +40,22 @@ class _QuizScreenState extends State<QuizScreen> {
 
     quizModel.calculateScores();
 
-    // Dialog: direkt mit String, kein S.quizSavePrompt
+    // Sicherstellen, dass der Kontext noch gemountet ist
+    if (!mounted) return;
+
     final save = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(S.of(context).quizTitle),
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(S.of(dialogCtx).quizTitle),
         content: const Text('Möchten Sie das Ergebnis speichern?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(S.of(context).no),
+            onPressed: () => Navigator.of(dialogCtx).pop(false),
+            child: Text(S.of(dialogCtx).no),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(S.of(context).yes),
+            onPressed: () => Navigator.of(dialogCtx).pop(true),
+            child: Text(S.of(dialogCtx).yes),
           ),
         ],
       ),
@@ -97,10 +100,11 @@ class _QuizScreenState extends State<QuizScreen> {
         child: Column(
           children: [
             LinearProgressIndicator(
-              value: (quizModel.currentIndex + 1) / quizModel.questions.length,
+              value: (quizModel.currentIndex + 1) /
+                  quizModel.questions.length,
               minHeight: 8,
               backgroundColor:
-                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+                  Theme.of(context).colorScheme.surface.withAlpha(30),
               valueColor: AlwaysStoppedAnimation<Color>(
                 Theme.of(context).colorScheme.primary,
               ),

@@ -22,6 +22,9 @@ linter:
     sort_child_properties_last: true
 
 analyzer:
+  # Ignoriere alle automatisch generierten Lokalisierungsdateien
+  exclude:
+    - lib/generated/**
   errors:
     unused_import: error
     dead_code: error
