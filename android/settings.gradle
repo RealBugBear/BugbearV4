@@ -1,3 +1,5 @@
+import java.util.Properties
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -6,7 +8,9 @@ pluginManagement {
     }
     // Load flutter.sdk from local.properties
     def props = new Properties()
-    file("$rootDir/local.properties").withInputStream { props.load(it) }
+    file("$rootDir/local.properties").withInputStream { stream ->
+        props.load(stream)
+    }
     def flutterSdk = props.getProperty("flutter.sdk")
     if (flutterSdk == null) {
         throw new IllegalStateException("flutter.sdk not set in local.properties")

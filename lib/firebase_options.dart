@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'bugbear-9d720.firebaseapp.com',
     storageBucket: 'bugbear-9d720.firebasestorage.app',
   );
+
 }
