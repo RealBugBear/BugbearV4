@@ -6,16 +6,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:bugbear_app/firebase_options.dart';
-import 'package:bugbear_app/services/auth_service.dart';
-import 'package:bugbear_app/state/auth_provider.dart';
-import 'package:bugbear_app/screens/common/splash_screen.dart';
-import 'package:bugbear_app/screens/onboarding/login_screen.dart';
-import 'package:bugbear_app/screens/onboarding/register_screen.dart';
-import 'package:bugbear_app/screens/onboarding/role_selection_screen.dart';
-import 'package:bugbear_app/screens/common/dashboard_screen.dart';
-import 'package:bugbear_app/screens/calendar/calendar_screen.dart';
-import 'package:bugbear_app/screens/forum/forum_screen.dart';
-import 'package:bugbear_app/screens/profile/settings_screen.dart';
+import 'package:bugbear_app/features/onboarding/services/auth_service.dart';
+import 'package:bugbear_app/features/onboarding/state/auth_provider.dart';
+import 'package:bugbear_app/features/common/splash_screen.dart';
+import 'package:bugbear_app/features/onboarding/screens/login_screen.dart';
+import 'package:bugbear_app/features/onboarding/screens/register_screen.dart';
+import 'package:bugbear_app/features/onboarding/screens/role_selection_screen.dart';
+import 'package:bugbear_app/features/common/dashboard_screen.dart';
+import 'package:bugbear_app/features/onboarding/profile/settings_screen.dart';
 
 import 'package:bugbear_app/features/training/models/session_state.dart';
 import 'package:bugbear_app/features/training/models/session_state_adapter.dart';
@@ -76,7 +74,6 @@ class MyApp extends StatelessWidget {
         Provider<AuthService>(
           create: (_) => AuthService(),
         ),
-
         Provider<SessionRepository>.value(
           value: sessionRepository,
         ),
@@ -91,12 +88,9 @@ class MyApp extends StatelessWidget {
         Provider<CalendarService>(
           create: (_) => CalendarService(),
         ),
-
-        // Neu: Repository für die Phasen‐Übungen
         Provider<ExerciseRepository>(
           create: (_) => ExerciseRepository(),
         ),
-
         ChangeNotifierProvider<SessionNotifier>(
           create: (ctx) {
             final exRepo = ctx.read<ExerciseRepository>();
@@ -123,8 +117,6 @@ class MyApp extends StatelessWidget {
           '/register': (c) => const RegisterScreen(),
           '/select-role': (c) => const RoleSelectionScreen(),
           '/dashboard': (c) => const DashboardScreen(),
-          '/calendar': (c) => const CalendarScreen(),
-          '/forum': (c) => const ForumScreen(),
           '/settings': (c) => const SettingsScreen(),
         },
       ),

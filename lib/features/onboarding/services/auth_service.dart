@@ -1,33 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'secure_storage_service.dart';
 
 /// AuthService kümmert sich um Anmeldung/Registrierung
-/// und legt das Nutzerprofil DSGVO-konform in Firestore an.
+/// und sichert den Login-Status verschlüsselt.
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db  = FirebaseFirestore.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final SecureStorageService _secureStorage = SecureStorageService();
 
   /// Stream der Authentifizierungszustände
   Stream<User?> get authStateChanges => _auth.authStateChanges();
-
-  /// Anonym anmelden (z.B. für interne Tests)
-  Future<UserCredential> signInAnonymously() {
-    return _auth.signInAnonymously();
-  }
 
   /// Anmeldung mit E-Mail und Passwort
   Future<UserCredential> signInWithEmail(
     String email,
     String password,
-  ) {
-    return _auth.signInWithEmailAndPassword(
+  ) async {
+    final cred = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
+    // Login-Flag setzen
+    await _secureStorage.setLoggedIn(true);
+    return cred;
   }
 
   /// Registrierung mit E-Mail, Passwort und optionalem Nickname.
-  /// Speichert in Firestore nur die email und nickname – keine weiteren PII.
+  /// Speichert in Firestore nur die nötigen PII.
   Future<UserCredential> registerWithEmail({
     required String email,
     required String password,
@@ -38,16 +38,19 @@ class AuthService {
       password: password,
     );
     final user = cred.user!;
-    final data = {
+    final data = <String, dynamic>{
       'email': user.email,
       if (nickname != null) 'nickname': nickname,
     };
     await _db.collection('users').doc(user.uid).set(data);
+    // Login-Flag setzen
+    await _secureStorage.setLoggedIn(true);
     return cred;
   }
 
-  /// Abmelden
-  Future<void> signOut() {
-    return _auth.signOut();
+  /// Abmelden und gespeicherten Login-Status löschen
+  Future<void> signOut() async {
+    await _auth.signOut();
+    await _secureStorage.clear();
   }
 }

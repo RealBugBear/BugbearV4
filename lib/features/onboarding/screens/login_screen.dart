@@ -1,19 +1,17 @@
-// File: lib/screens/onboarding/register_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bugbear_app/services/auth_service.dart';
+import 'package:bugbear_app/features/onboarding/services/auth_service.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  RegisterScreenState createState() => RegisterScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController _emailController    = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class LoginScreenState extends State<LoginScreen> {
+  final _emailController    = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _error;
 
@@ -24,25 +22,23 @@ class RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _register() async {
+  Future<void> _login() async {
     setState(() {
       _isLoading = true;
       _error     = null;
     });
     try {
       final auth = context.read<AuthService>();
-      await auth.registerWithEmail(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        // falls du später Nickname unterstützen willst, hier einfügen:
-        // nickname: _nicknameController.text.trim(),
+      await auth.signInWithEmail(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
       );
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/select-role');
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = 'Fehler beim Registrieren: ${e.toString()}';
+        _error = 'Fehler bei der Anmeldung: ${e.toString()}';
       });
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -52,7 +48,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Registrieren')),
+      appBar: AppBar(title: const Text('Anmelden')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -61,7 +57,6 @@ class RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'E-Mail'),
-              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 8),
             TextField(
@@ -75,19 +70,19 @@ class RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
             ],
             ElevatedButton(
-              onPressed: _isLoading ? null : _register,
+              onPressed: _isLoading ? null : _login,
               child: _isLoading
                   ? const SizedBox(
                       width: 16,
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Registrieren'),
+                  : const Text('Anmelden'),
             ),
             const SizedBox(height: 12),
             TextButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
-              child: const Text('Bereits registriert? Anmelden'),
+              onPressed: () => Navigator.pushNamed(context, '/register'),
+              child: const Text('Noch keinen Account? Registrieren'),
             ),
           ],
         ),
