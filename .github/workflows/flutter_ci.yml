@@ -62,7 +62,6 @@ jobs:
     name: Build & Coverage-Upload
     runs-on: ubuntu-latest
     needs: test
-    # Nur auf main ausführen
     if: github.ref == 'refs/heads/main'
 
     steps:
