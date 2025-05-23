@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:bugbear_app/firebase_options.dart';
 import 'package:bugbear_app/services/auth_service.dart';
@@ -10,21 +13,58 @@ import 'package:bugbear_app/screens/onboarding/login_screen.dart';
 import 'package:bugbear_app/screens/onboarding/register_screen.dart';
 import 'package:bugbear_app/screens/onboarding/role_selection_screen.dart';
 import 'package:bugbear_app/screens/common/dashboard_screen.dart';
-import 'package:bugbear_app/screens/training/training_screen.dart';
 import 'package:bugbear_app/screens/calendar/calendar_screen.dart';
 import 'package:bugbear_app/screens/forum/forum_screen.dart';
 import 'package:bugbear_app/screens/profile/settings_screen.dart';
+
+import 'package:bugbear_app/features/training/models/session_state.dart';
+import 'package:bugbear_app/features/training/models/session_state_adapter.dart';
+import 'package:bugbear_app/features/training/services/session_repository.dart';
+import 'package:bugbear_app/features/training/services/sync_service.dart';
+import 'package:bugbear_app/features/training/services/exercise_repository.dart';
+import 'package:bugbear_app/features/training/notifier/session_notifier.dart';
+import 'package:bugbear_app/features/calendar/services/calendar_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(SessionStatusAdapter());
+  Hive.registerAdapter(SessionStateAdapter());
+  await Hive.openBox<SessionState>('session_state');
+
+  final sessionRepository = SessionRepository();
+  final saved = await sessionRepository.load();
+  final initialState = saved ??
+      SessionState(
+        phaseId: '0',
+        exerciseIndex: 0,
+        completedReps: 0,
+        remainingSeconds: 8,
+        isPaused: false,
+        startedAt: DateTime.now(),
+      );
+
+  runApp(
+    MyApp(
+      sessionRepository: sessionRepository,
+      initialSessionState: initialState,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final SessionRepository sessionRepository;
+  final SessionState initialSessionState;
+
+  const MyApp({
+    Key? key,
+    required this.sessionRepository,
+    required this.initialSessionState,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +75,42 @@ class MyApp extends StatelessWidget {
         ),
         Provider<AuthService>(
           create: (_) => AuthService(),
+        ),
+
+        Provider<SessionRepository>.value(
+          value: sessionRepository,
+        ),
+        Provider<SyncService>(
+          create: (_) => SyncService(
+            sessionRepository,
+            FirebaseFirestore.instance,
+            FirebaseAuth.instance.currentUser?.uid ?? '',
+          ),
+          dispose: (_, svc) => svc.dispose(),
+        ),
+        Provider<CalendarService>(
+          create: (_) => CalendarService(),
+        ),
+
+        // Neu: Repository für die Phasen‐Übungen
+        Provider<ExerciseRepository>(
+          create: (_) => ExerciseRepository(),
+        ),
+
+        ChangeNotifierProvider<SessionNotifier>(
+          create: (ctx) {
+            final exRepo = ctx.read<ExerciseRepository>();
+            final initialExercises =
+                exRepo.getExercisesForPhase(initialSessionState.phaseId);
+            return SessionNotifier(
+              sessionRepository,
+              ctx.read<SyncService>(),
+              ctx.read<CalendarService>(),
+              exRepo,
+              initialExercises,
+              initialSessionState,
+            );
+          },
         ),
       ],
       child: MaterialApp(
@@ -47,7 +123,6 @@ class MyApp extends StatelessWidget {
           '/register': (c) => const RegisterScreen(),
           '/select-role': (c) => const RoleSelectionScreen(),
           '/dashboard': (c) => const DashboardScreen(),
-          '/training': (c) => const TrainingScreen(),
           '/calendar': (c) => const CalendarScreen(),
           '/forum': (c) => const ForumScreen(),
           '/settings': (c) => const SettingsScreen(),
