@@ -24,7 +24,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.10.6'      # stellt Dart 3.1+ bereit
 
       - name: Cache Pub Dependencies
         uses: actions/cache@v4
@@ -52,6 +52,44 @@ jobs:
           else
             echo "Keine Tests gefunden – überspringe"
           fi
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+
+  build:
+    name: Build & Coverage-Upload
+    runs-on: ubuntu-latest
+    needs: test
+    # Nur auf main ausführen
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.6'
+
+      - name: Cache Pub Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Tests & Gather Coverage
+        run: |
+          sudo apt-get update && sudo apt-get install -y lcov
+          flutter test --coverage
+          lcov --remove coverage/lcov.info 'lib/generated/*' -o coverage/lcov.info
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v4
