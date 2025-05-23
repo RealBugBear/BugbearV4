@@ -1,13 +1,20 @@
 name: Flutter CI
 
 on:
+  # Läuft bei jedem Push auf main und auf alle feature/…-Branches
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - 'feature/**'
+
+  # Läuft für jeden Pull Request in main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
+  test:
+    name: Test & Analyse
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +24,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3'
+          channel: stable
 
       - name: Cache Pub Dependencies
         uses: actions/cache@v4
@@ -30,21 +37,20 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Auto-format code
+      - name: Auto-format Code
         run: dart format .
 
-      - name: Analyze Project
+      - name: Analyse Project
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Run Tests & Gather Coverage
         run: |
           if [ -d test ] && [ "$(ls -A test)" ]; then
-            echo "▶ Tests detected — running coverage"
             sudo apt-get update && sudo apt-get install -y lcov
             flutter test --coverage
             lcov --remove coverage/lcov.info 'lib/generated/*' -o coverage/lcov.info
           else
-            echo "⚠ No tests found — skipping coverage step"
+            echo "Keine Tests gefunden – überspringe"
           fi
 
       - name: Upload Coverage
