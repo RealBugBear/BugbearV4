@@ -1,4 +1,3 @@
-# File: .github/workflows/flutter_ci.yml
 name: Flutter CI
 
 on:
@@ -39,9 +38,14 @@ jobs:
 
       - name: Run Tests & Gather Coverage
         run: |
-          sudo apt-get update && sudo apt-get install -y lcov
-          flutter test --coverage
-          lcov --remove coverage/lcov.info 'lib/generated/*' -o coverage/lcov.info
+          if [ -d test ] && [ "$(ls -A test)" ]; then
+            echo "▶ Tests detected — running coverage"
+            sudo apt-get update && sudo apt-get install -y lcov
+            flutter test --coverage
+            lcov --remove coverage/lcov.info 'lib/generated/*' -o coverage/lcov.info
+          else
+            echo "⚠ No tests found — skipping coverage step"
+          fi
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v4
